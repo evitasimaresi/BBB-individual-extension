@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Info - Board Games Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="icon" type="image/x-icon" href="/Images/logo.png">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar-container"></nav>
+
+
+    <main id="main-content">
+
+        <!-- Navigation Bar -->
+        <header id="navbar-container"></header>
+
+        <!-- User Stats Section -->
+        <section class="user-info-container">
+            <h2 class="user-info-title">User Information</h2>
+            <p><strong>Username:</strong> boardgamefan42</p>
+            <p><strong>Email:</strong> fan42@gamesmail.com</p>
+            <p><strong>Number of Borrowed Games:</strong> 3</p>
+        </section>
+
+        <!-- Current Borrowed Games Section -->
+        <h2 class="borrowed-title">Currently Borrowed Games</h2>
+
+        <!-- Game Card -->
+        <li class="card" id="accountcard">
+            <img class="images" src="Images/catan.webp" alt="Catan board game package">
+            <article class="content">
+                <h1>Catan</h1>
+                <p>This is a short description of the game.</p>
+                <footer class="button-container">
+                    <button class="button button-primary">Return</button>
+                </footer>
+            </article>
+        </li>
+
+        <!-- Footer -->
+        <div id="footer-container"></div>
+    </main>
+    <script src="js/sidebar.js"></script>
+    <script src="js/componentsLoader.js"></script>
+
+</body>
+
+</html>

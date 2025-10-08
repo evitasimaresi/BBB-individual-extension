@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google's API for icons anf fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <!-- Custom css -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/filters.css">
+    <title>BBB</title>
+    <link rel="icon" type="image/x-icon" href="/Images/logo.png">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar-container"></nav>
+
+
+    <main id="main-content">
+        <!-- Navigation bar -->
+        <header id="navbar-container"></header>
+
+        <search class="searchbar">
+
+            <form action="account.html" method="get">
+                <input type="text" placeholder="Search" />
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                        <path
+                            d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+                    </svg>
+                </button>
+            </form>
+        </search>
+
+
+        <section id="indexmain">
+            <section class="filters-container">
+                <form class="filters-form">
+                    <div class="filter-group">
+                        <button type="button" class="filter-toggle" data-filter="categories">
+                            <span>categories</span>
+                            <span class="filter-icon">+</span>
+                        </button>
+                        <div class="filter-content" id="categories">
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="strategy">
+                                <span class="checkmark"></span>
+                                Strategy
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="family">
+                                <span class="checkmark"></span>
+                                Family
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="party">
+                                <span class="checkmark"></span>
+                                Party
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="card">
+                                <span class="checkmark"></span>
+                                Card Game
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <button type="button" class="filter-toggle" data-filter="age">
+                            <span>age</span>
+                            <span class="filter-icon">+</span>
+                        </button>
+                        <div class="filter-content" id="age">
+                            <label class="filter-option">
+                                <input type="checkbox" name="age" value="6+">
+                                <span class="checkmark"></span>
+                                6+ years
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="age" value="8+">
+                                <span class="checkmark"></span>
+                                8+ years
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="age" value="12+">
+                                <span class="checkmark"></span>
+                                12+ years
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="age" value="18+">
+                                <span class="checkmark"></span>
+                                18+ years
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <button type="button" class="filter-toggle" data-filter="timeplay">
+                            <span>time play</span>
+                            <span class="filter-icon">+</span>
+                        </button>
+                        <div class="filter-content" id="timeplay">
+                            <label class="filter-option">
+                                <input type="checkbox" name="timeplay" value="15-30">
+                                <span class="checkmark"></span>
+                                15-30 min
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="timeplay" value="30-60">
+                                <span class="checkmark"></span>
+                                30-60 min
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="timeplay" value="60-120">
+                                <span class="checkmark"></span>
+                                60-120 min
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="timeplay" value="120+">
+                                <span class="checkmark"></span>
+                                120+ min
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <button type="button" class="filter-toggle" data-filter="players">
+                            <span>number of players</span>
+                            <span class="filter-icon">+</span>
+                        </button>
+                        <div class="filter-content" id="players">
+                            <label class="filter-option">
+                                <input type="checkbox" name="players" value="1-2">
+                                <span class="checkmark"></span>
+                                1-2 players
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="players" value="3-4">
+                                <span class="checkmark"></span>
+                                3-4 players
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="players" value="5-6">
+                                <span class="checkmark"></span>
+                                5-6 players
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="players" value="7+">
+                                <span class="checkmark"></span>
+                                7+ players
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <nav class="scroll-container">
+                <ul class="scrolloverflow">
+                    <li class="card">
+                        <img class="images" src="Images/catan.png" alt="Catan board game package">
+                        <article class="content">
+                            <h1>Catan</h1>
+                            <p>This is a short description of the game.</p>
+                            <footer class="button-container">
+                                <button class="button button-primary">Borrow</button>
+                            </footer>
+                        </article>
+                    </li>
+
+                    <li class="card">
+                        <img src="Images/monopoly.webp" class="images" alt="Monopoly board game package">
+                        <article class="content">
+                            <h1>Monopoly</h1>
+                            <p>This is a short description of the game.</p>
+                            <footer class="button-container">
+                                <button class="button button-primary">Borrow</button>
+                            </footer>
+                        </article>
+                    </li>
+
+                    <li class="card">
+                        <img src="Images/evergreen.webp" class="images" alt="Catan board game package">
+                        <article class="content">
+                            <h1>Evergreen</h1>
+                            <p>This is a short description of the game.</p>
+                            <footer class="button-container">
+                                <button class="button button-primary">Borrow</button>
+                            </footer>
+                        </article>
+                    </li>
+
+                    <li class="card">
+                        <img src="Images/superFarmer.webp" class="images" alt="Catan board game package">
+                        <article class="content">
+                            <h1>Super Farmer</h1>
+                            <p>This is a short description of the game.</p>
+                            <footer class="button-container">
+                                <button class="button button-primary">Borrow</button>
+                            </footer>
+                        </article>
+                    </li>
+
+                    <li class="card">
+                        <img src="Images/cabanga.webp" class="images" alt="Catan board game package">
+                        <article class="content">
+                            <h1>Cabanga</h1>
+                            <p>This is a short description of the game.</p>
+                            <footer class="button-container">
+                                <button class="button button-primary">Borrow</button>
+                            </footer>
+                        </article>
+                    </li>
+
+                    <li class="card">
+                        <img src="Images/sidereal.webp" class="images" alt="Catan board game package">
+                        <article class="content">
+                            <h1>Sidereal Confluence</h1>
+                            <p>This is a short description of the game.</p>
+                            <footer class="button-container">
+                                <button class="button button-primary">Borrow</button>
+                            </footer>
+                        </article>
+                    </li>
+
+                    <li class="card">
+                        <img src="Images/starRealms.webp" class="images" alt="Catan board game package">
+                        <article class="content">
+                            <h1>Star Realms</h1>
+                            <p>This is a short description of the game.</p>
+                            <footer class="button-container">
+                                <button class="button button-primary">Borrow</button>
+                            </footer>
+                        </article>
+                    </li>
+
+                    <li class="card">
+                        <img src="Images/europa.webp" class="images" alt="Catan board game package">
+                        <article class="content">
+                            <h1>Europa</h1>
+                            <p>This is a short description of the game.</p>
+                            <footer class="button-container">
+                                <button class="button button-primary">Borrow</button>
+                            </footer>
+                        </article>
+                    </li>
+
+
+                    <li class="card">
+                        <img src="Images/ligretto.webp" class="images" alt="Catan board game package">
+                        <article class="content">
+                            <h1>Ligretto</h1>
+                            <p>This is a short description of the game.</p>
+                            <footer class="button-container">
+                                <button class="button button-primary">Borrow</button>
+                            </footer>
+                        </article>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+
+        <!-- Footer -->
+        <div id="footer-container"></div>
+    </main>
+
+
+    <script src="js/filters.js"></script>
+    <script src="js/componentsLoader.js"></script>
+    <script src="js/sidebar.js"></script>
+</body>
+
+</html>

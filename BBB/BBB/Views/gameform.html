@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Uploading Form - BBB</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/footer.css">`
+  <link rel="icon" type="image/x-icon" href="/Images/logo.png">
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <nav id="sidebar-container"></nav>
+
+  <main id="main-content">
+    <!-- Navigation Bar -->
+    <header id="navbar-container"></header>
+
+
+    <!-- Game Uploading Form Page -->
+    <h2 class="game-upload-page-title">Game Uploading Form</h2>
+
+    <!-- Upload Form -->
+    <form class="game-upload-form">
+      <section>
+        <label for="gameTitle" style="display:block; font-weight:bold; margin-bottom:5px;">Game Title</label>
+        <input type="text" id="gameTitle" name="gameTitle" placeholder="Enter game title">
+      </section>
+
+      <section>
+        <label for="gameCover" style="display:block; font-weight:bold; margin-bottom:5px;">Game Cover</label>
+        <input type="file" id="gameCover" name="gameCover" accept="image/*">
+      </section>
+
+      <section>
+        <label for="gameDesc" style="display:block; font-weight:bold; margin-bottom:5px;">Description</label>
+        <textarea id="gameDesc" name="gameDesc" rows="4" placeholder="Enter description"></textarea>
+      </section>
+
+      <button class="button button-primary" type="submit">
+        Upload Game
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <div id="footer-container"></div>
+  </main>
+
+  <script src="js/sidebar.js"></script>
+  <script src="js/componentsLoader.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,135 @@
+/* Filter Form*/
+.filters-container {
+    background-color: transparent;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    padding: var(--padding-md);
+    margin: var(--margin-none);
+    margin-left: var(--margin-lg);
+    /* flex: 1 40%; */
+}
+
+.filters-form {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.filter-group {
+    border-bottom: var(--border-width-thin) solid var(--gray-500);
+}
+
+.filter-group:last-child {
+    border-bottom: none;
+}
+
+
+.filter-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--padding-md) var(--padding-xs);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--blue-custom-light);
+    letter-spacing: var(--letter-spacing-wide);
+    text-align: left;
+    transition: background-color var(--transition-normal);
+}
+
+.filter-toggle:hover {
+    background-color: var(--gray-500);
+}
+
+
+.filter-toggle span:first-child {
+    text-transform: uppercase;
+}
+
+.filter-icon {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-normal);
+    color: var(--gray-400);
+    align-items: right;
+    transition: transform var(--transition-normal);
+}
+
+
+
+.filter-toggle.active .filter-icon {
+    transform: rotate(45deg);
+}
+
+
+.filter-content {
+    display: none;
+    padding: 0 var(--padding-lg) var(--padding-md) var(--padding-xs);
+    background-color: none;
+
+}
+
+.filter-content.active {
+    display: block;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    padding: var(--padding-xs) 0;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--blue-custom-light);
+    position: relative;
+
+}
+
+.filter-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    height: 1rem;
+    width: 1rem;
+    background-color: var(--grey-400);
+    border: var(--border-width-thin) solid var(--gray-400);
+    border-radius: var(--border-radius-xs);
+    margin-right: var(--margin-sm);
+    position: relative;
+    transition: all var(--transition-normal);
+}
+
+
+.filter-option:hover .checkmark {
+    border-color: var(--orange-500);
+}
+
+.filter-option input:checked~.checkmark {
+    background-color: var(--orange-500);
+    border-color: transparent;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 0.25rem;
+    top: 0.125rem;
+    width: 0.25rem;
+    height: 0.5rem;
+    border: solid var(--white);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+
+.filter-option input:checked~.checkmark:after {
+    display: block;
+}

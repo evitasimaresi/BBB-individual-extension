@@ -1,0 +1,138 @@
+/* gives a visual representation of the border and spacing*/
+/* * {
+  outline-style: solid;
+  outline-color: rgba(128, 248, 0, 0.42);
+  outline-width: 0.5px;
+} */
+
+:root {
+  /* Color palette */
+  /* Blue*/
+  --blue-50: #f8fafc;
+  --blue-100: #f1f5f9;
+  --blue-200: #e2e8f0;
+  --blue-300: #cbd5e1;
+  --blue-400: #94a3b8;
+  --blue-500: #64748b;
+  --blue-600: #475569;
+  --blue-700: #334155;
+  --blue-800: #1e293b;
+  --blue-900: #0f172a;
+
+  --blue-custom-light: #c8d9f6;
+  --blue-custom-dark: #384355;
+  --blue-custom-darker: #28374f;
+
+  /* Purple*/
+  --purple-600: #4f46e5;
+  --purple-500: #6366f1;
+
+  /* Orange*/
+  --orange-400: #fb923c;
+  --orange-500: #f97316;
+  --orange-600: #ea580c;
+  --orange-700: #c2410c;
+  --orange-800: #9a3412;
+
+  /* Red*/
+  --red-400: #f87171;
+
+  /* B&W*/
+  --black: #000000;
+  --gray-900: #111827;
+  --gray-800: #1f2937;
+  --gray-700: #374151;
+  --gray-600: #4b5563;
+  --gray-500: #6b7280;
+  --gray-400: #9ca3af;
+  --gray-300: #d1d5db;
+  --gray-200: #e5e7eb;
+  --gray-100: #f3f4f6;
+  --gray-50: #f9fafb;
+  --white: #ffffff;
+
+  /* Font properties */
+  /* Sizes */
+  /* 12px */
+  --font-size-xs: 0.75rem;
+  /* 14px */
+  --font-size-sm: 0.875rem;
+  /* 16px */
+  --font-size-base: 1rem;
+  /* 18px */
+  --font-size-lg: 1.125rem;
+  /* 20px */
+  --font-size-xl: 1.25rem;
+  /* 24px */
+  --font-size-2xl: 1.5rem;
+
+  /* Weights */
+  --font-weight-thin: 100;
+  --font-weight-light: 200;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  /* Letter spacing */
+  --letter-spacing-wide: 0.05em;
+
+
+  /* Spacing */
+  /* Gaps */
+  /* 4px */
+  --gap-xs: 0.25rem;
+  /* 8px */
+  --gap-sm: 0.5rem;
+  /* 12px */
+  --gap-md: 0.75rem;
+  /* 16px */
+  --gap-lg: 1rem;
+  /* 24px */
+  --gap-xl: 1.5rem;
+
+  /* Padding */
+  --padding-none: 0;
+  --padding-xs: 0.5rem;
+  --padding-sm: 0.625rem;
+  --padding-md: 0.75rem;
+  --padding-l: 2rem;
+  --padding-lg: 2.5rem;
+
+  /* Margin */
+  --margin-none: 0;
+  --margin-xs: 0.25rem;
+  --margin-sm: 0.5rem;
+  --margin-md: 0.55rem;
+  --margin-lg: 1rem;
+  --margin-xl: 1.5rem;
+  --margin-2xl: 2.5rem;
+  --margin-3xl: 3rem;
+
+  /* Width specific */
+  --width-full: 100%;
+  --width-content: 95%;
+  --width-input: 16rem;
+  --width-auto: auto;
+
+  /* Border radius */
+  --border-radius-xs: 0.25rem;
+  --border-radius-sm: 0.375rem;
+  --border-radius-lg: 0.75rem;
+  --border-radius-2x1: 1.5rem;
+
+  /* Border width*/
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 3px;
+
+  /* Transition*/
+  --transition-fast: 0.1s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+}
+
+html {
+  font-family: "Inter", serif;
+}
