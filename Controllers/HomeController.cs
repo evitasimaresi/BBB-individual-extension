@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 
+
 namespace BBB.Controllers;
 
 public class HomeController : Controller
@@ -63,6 +64,11 @@ public class HomeController : Controller
     public IActionResult Register()
     {
         return View();
+    }
+    public async Task<IActionResult> Test()
+    {
+        var usernames = await _db.Users.Select(u => u.Username).ToListAsync();
+        return Content(string.Join("\n", usernames), "text/plain");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -35,8 +35,5 @@ namespace BBB.Data
             modelBuilder.ApplyConfiguration(new TagConfiguration());
             modelBuilder.ApplyConfiguration(new BoardGameUserConfiguration());
             modelBuilder.ApplyConfiguration(new BoardGameTagConfiguration());
-
-            base.OnModelCreating(modelBuilder);
-        }
     }
 }
