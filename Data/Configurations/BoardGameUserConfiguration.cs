@@ -10,7 +10,7 @@ namespace BBB.Data.Configurations
         {
             builder.ToTable("BoardGameUsers");
 
-            builder.HasKey(bgu => new { bgu.BoardGameId, bgu.UserId });
+            builder.HasKey(bgu => bgu.Id);
 
             builder.HasOne(bgu => bgu.BoardGame)
                    .WithMany(bg => bg.BoardGameUsers)

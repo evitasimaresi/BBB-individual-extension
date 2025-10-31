@@ -2,6 +2,8 @@
 {
     public class BoardGameUser
     {
+        public int Id { get; set; }
+
         public int BoardGameId { get; set; }
         public virtual BoardGame BoardGame { get; set; } = null!;
 
