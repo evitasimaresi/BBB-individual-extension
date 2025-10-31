@@ -12,5 +12,7 @@
         public virtual Role Role { get; set; } = null!;
 
         public virtual Auth Auth { get; set; } = null!;
+
+        public virtual ICollection<BoardGameUser> BoardGameUsers { get; set; } = new List<BoardGameUser>();
     }
 }
