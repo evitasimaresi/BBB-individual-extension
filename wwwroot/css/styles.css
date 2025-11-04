@@ -315,6 +315,13 @@ footer {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.user-info-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  background: none;
+  padding: 0;
+}
 .user-info-title {
   margin-top: var(--margin-none);
   color: var(--gray-600);
