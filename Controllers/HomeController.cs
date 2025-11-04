@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 
-
 namespace BBB.Controllers;
 
 public class HomeController : Controller
