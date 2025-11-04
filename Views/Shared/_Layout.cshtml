@@ -1,50 +1,120 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
+    @* <meta charset="utf-8" /> *@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BBB</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/BBB.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BBB</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+    <!-- sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="/Home/Account">Account</a></li>
+            <li><a href="#">Library</a></li>
+            <li><a href="gameform.html">Game Form</a></li>
+        </ul>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - BBB - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!--navigation bar-->
+    <div class="navbar">
+        <div class="menu-icon" onclick="toggleSidebar()">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
+        <h1 class="site-title">
+            <a href="index.html" class="site-title__link">
+                BBB
+            </a>
+        </h1>
+        <div class="login" onclick="window.location.href='login.html'">
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+            </svg>
+            <p>Login</p>
+        </div>
+    </div>
+
+
+    <div>
+        @RenderBody()
+    </div>
+
+
+    <!--footer-->
+    <footer>
+    <div class="footer-main-content">
+        <section class="footer-left-column">
+            <div class="club-info">
+                <h3>Boring Boardgames Bureau</h3>
+                <p>Boardgames club catalog & reservation</p>
+            </div>
+
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="material-symbols-outlined">mail</span>
+                    <a href="mailto:BBB@sdu.com">Send Email</a>
+                </div>
+                <div class="contact-item">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <p>University of Southern Denmark, Søndeborg</p>
+                </div>
+            </div>
+            <div class="repo-info">
+                <a class="repo-link" href="https://github.com/Filip-Stranovsky-SDU/Web">
+                    <span class="material-symbols-outlined">group</span>
+                    <p>Project repo / credits</p>
+                </a>
+            </div>
+
+        </section>
+        <section class="footer-middle-column">
+            <h4>Quick links</h4>
+            <div class="quick-links-container">
+                <a href="index.html">Home</a>
+                <a href="account.html">Account</a>
+                <a href="#">Library</a>
+                <a href="gameform.html">Game Form</a>
+            </div>
+            <div class="suggest-game-container">
+                <label for="suggest">Suggest a new board game</label>
+                <div class="suggest-input-container">
+                    <input id="suggest" class="suggest-input" type="text" placeholder="Game title or idea" />
+                    <button class="suggest-button">Send</button>
+                </div>
+            </div>
+        </section>
+        <section class="footer-right-column">
+            <h4>Policies & Info</h4>
+            <div class="policies">
+                <a href="#">Privacy & Security</a>
+                <a href="mailto:BBB@sdu.com">Email & Reservation Limits</a>
+            </div>
+            <div class="footer-tech-section">
+                <p>Powered by <bold>monopoly money</p>
+                <a href="#" aria-label="Discord"><img src="/Images/Discord-White-logo.png" alt="Discord logo"
+                        height="12px" /></a>
+            </div>
+            <div class="credits-container">
+                <p>Credits: Group 20 - Web Technologies</p>
+                <p class="footer-credits-love">Made with <span class="material-symbols-outlined footer-heart">
+                        favorite
+                    </span> for board games.</p>
+            </div>
+        </section>
+    </div>
+    <section class="footer-bottom-bar">
+        <p>© 2025 — All rights reserved</p>
+        <img src="/Images/SDU_WHITE_LOGO.webp" alt="SDU logo" height="15px">
+        <p>University of Southern Denmark — Course: Web Technologies</p>
+    </section>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
