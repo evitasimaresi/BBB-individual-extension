@@ -41,3 +41,15 @@ body {
     width: 100%;
     text-align: center;
 }
+
+.register-link {
+    display: block;
+    color: var(--blue-200);
+    margin-top: 10px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
