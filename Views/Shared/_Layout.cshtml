@@ -40,7 +40,7 @@
     </div>
 
     <!--navigation bar-->
-    <div class="navbar">
+    <div class="navbar sidebar-response">
         <div class="menu-icon" onclick="toggleSidebar()">
             <span></span>
             <span></span>
@@ -74,18 +74,16 @@
             }
 
         </div>
-
-
     </div>
 
 
-    <div>
+    <div class="sidebar-response">
         @RenderBody()
     </div>
 
 
     <!--footer-->
-    <footer>
+    <footer class="sidebar-response">
     <div class="footer-main-content">
         <section class="footer-left-column">
             <div class="club-info">
@@ -154,7 +152,6 @@
     </footer>
 
     <script src="~/js/filters.js"></script>
-    <script src="~/js/componentsLoader.js"></script>
     <script src="~/js/sidebar.js"></script>
 
 </body>
