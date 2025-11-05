@@ -78,7 +78,7 @@ public class HomeController : Controller
             g.Id,
             g.Title,
             g.Description,
-            g.Link
+            g.Image
         }).ToList();
 
         return Json(games);
