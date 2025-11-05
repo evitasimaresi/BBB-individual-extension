@@ -246,7 +246,7 @@ footer {
 }
 
 .sidebar-links a {
-  color: color: var(--blue-custom-light);
+  color: var(--blue-custom-light);
   text-decoration: none;
   font-weight: var(--font-weight-normal);
 }
@@ -292,12 +292,9 @@ footer {
   flex: 1;
 }
 
-
-
-
-#sidebar-container:has(.sidebar.active)~#main-content,
-.sidebar.active~#main-content {
-  margin-left: 190px;
+#sidebar-container:has(.sidebar.active)~.sidebar-response,
+.sidebar.active~.sidebar-response {
+  margin-left: 200px;
   /* same width as sidebar */
   /*transform: scale(0.98);*/
 }
@@ -323,6 +320,7 @@ footer {
   background: none;
   padding: 0;
 }
+
 .user-info-title {
   margin-top: var(--margin-none);
   color: var(--gray-600);
