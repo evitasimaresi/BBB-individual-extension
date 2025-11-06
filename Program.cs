@@ -1,5 +1,6 @@
 using BBB.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 internal class Program
 {
@@ -22,9 +23,13 @@ internal class Program
 
 
         // Add database context
-        builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseLazyLoadingProxies()
-               .UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddSingleton<DisableWalInterceptor>();
+        builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
+        {
+            options.UseLazyLoadingProxies()
+                   .UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
+                   .AddInterceptors(serviceProvider.GetRequiredService<DisableWalInterceptor>());
+        });
 
         var app = builder.Build();
 
