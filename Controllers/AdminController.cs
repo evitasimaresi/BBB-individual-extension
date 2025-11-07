@@ -29,7 +29,7 @@ public class AdminController : Controller
 
         return View();
     }
-
+    
     [HttpPost]
     public async Task<ActionResult> AddGame(string gameTitle, string gameDesc, IFormFile gameCover)
     {
@@ -77,10 +77,4 @@ public class AdminController : Controller
 
         return View();
     }
-
-    
-
-
-
-
 }
