@@ -376,3 +376,25 @@ footer {
     flex-direction: column;
   }
 }
+
+/* Approve Page */
+.requests-container {
+    display: flex;
+    align-items:center;
+    flex-direction: column;
+    gap: 0;
+}
+
+.request-card {
+    margin: 0 !important;
+    padding: var(--padding-md);
+    border: var(--border-width-thin) solid var(--gray-500);
+    border-radius: var(--border-radius-lg);
+    background: var(--gray-50);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.request-details {
+    display: flex;
+    flex-direction: column;
+}
