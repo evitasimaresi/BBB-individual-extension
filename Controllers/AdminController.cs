@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using BBB.Data;
 using BBB.Models;
+using Microsoft.EntityFrameworkCore;
 
 public class AdminController : Controller
 {
@@ -75,6 +76,13 @@ public class AdminController : Controller
         if (user == null || user.Name != "admin")
             return RedirectToAction("Index", "Home");
 
-        return View();
+        var requests = _db.BoardGameUsers
+            .Include(r => r.User)
+            .Include(r => r.BoardGame)
+            .Where(r => r.ReturnDate == null)
+            .Where(r => r.BoardGame.StatusId == 3)
+            .ToList();
+
+        return View(requests);
     }
 }

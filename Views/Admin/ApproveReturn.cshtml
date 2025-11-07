@@ -1,9 +1,42 @@
-<html>
+@model List<BBB.Models.BoardGameUser>
 
+@{
+    ViewData["Title"] = "Approve / Return";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-    <body>
-        <hr>
-            XD
-        <hr>
-    </body>
-</html>
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Board Game</th>
+            <th>User</th>
+            <th>Request Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var request in Model)
+        {
+            <tr>
+                <td>@request.BoardGame.Title</td>
+                <td>@request.User.Username</td>
+                <td>@request.BorrowDate.ToShortDateString()</td>
+                <td>
+                    @if (false)
+                    {
+                        <span>Pending</span>
+                    }
+                    else if (false)
+                    {
+                        <span>Approved</span>
+                    }
+                    else
+                    {
+                        <span>Rejected</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
