@@ -33,11 +33,22 @@ public class HomeController : Controller
         if (user == null) return View(false);
         if (user.Role.Name == "admin") return View(true);
         return View(false);
-        
+
     }
 
     public IActionResult Account()
     {
+        var userId = HttpContext.Session.GetString("UserId");
+        if (!int.TryParse(userId, out var userID))
+            return RedirectToAction("Index", "Home");
+
+        var user = _db.Users
+            .Where(u => u.Id == userID)
+            .Select(u => new { u.Role.Name })
+            .FirstOrDefault();
+
+        if (user == null || user.Name != "user")
+            return RedirectToAction("Index", "Home");
         return View();
     }
 
@@ -83,7 +94,7 @@ public class HomeController : Controller
 
         return Json(games);
     }
-    
+
     [HttpPost]
     public IActionResult BorrowGame([FromBody] int request)
     {
@@ -98,9 +109,9 @@ public class HomeController : Controller
         BoardGame? game = _db.BoardGames.FirstOrDefault(g => g.Id == request);
 
         if (game == null) return StatusCode(418, "I'm a teapot");
-        
+
         if (game.StatusId != 1 && game.StatusId != 3) return Conflict();
-        
+
         int userID;
         if (!int.TryParse(userId, out userID)) return StatusCode(418, "I'm a teapot");
 
