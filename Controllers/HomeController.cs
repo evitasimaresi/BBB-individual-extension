@@ -47,7 +47,7 @@ public class HomeController : Controller
             .Select(u => new { u.Role.Name })
             .FirstOrDefault();
 
-        if (user == null || user.Name != "user")
+        if (user == null)
             return RedirectToAction("Index", "Home");
         return View();
     }

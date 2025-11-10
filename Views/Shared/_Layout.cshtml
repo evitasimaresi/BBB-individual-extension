@@ -31,16 +31,13 @@
                 var role = db.Users.Where(u => u.Id == userId)
                 .Select(u => u.Role.Name)
                 .FirstOrDefault();
+
                 if (role == "admin")
                 {
                     <li><a href="/Admin/GameForm">Game Form</a></li>
                     <li><a href="/Admin/ApproveReturn">Approve/Return</a></li>
                 }
-                if (role == "user")
-                {
-                    <li><a href="/Home/Account">Account</a></li>
-
-                }
+                <li><a href="/Home/Account">Account</a></li>
             }
         </ul>
     </div>
@@ -69,6 +66,8 @@
                 }
                 else
         {
+            var userName = Context.Session.GetString("Username") ?? "Member";
+            <p>@userName</p>
             <div class="login" onclick="window.location.href='/Account/Logout'">
                 <svg viewBox="0 0 24 24">
                     <circle cx="12" cy="8" r="4" />
@@ -120,7 +119,7 @@
                     <a href="/Home/Index">Home</a>
                     <a href="/Home/Account">Account</a>
                     <a href="#">Library</a>
-                    <a href="/Home/ToBeAdminPanel">Game Form</a>
+                    <a href="/Admin/GameForm">Game Form</a>
                 </div>
                 <div class="suggest-game-container">
                     <label for="suggest">Suggest a new board game</label>
