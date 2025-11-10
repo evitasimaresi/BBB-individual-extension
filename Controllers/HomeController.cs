@@ -103,13 +103,15 @@ public class HomeController : Controller
     [HttpGet]
     public IActionResult GetGames()
     {
-        var games = _db.BoardGames.Select(g => new
-        {
-            g.Id,
-            g.Title,
-            g.Description,
-            g.Image
-        }).ToList();
+        var games = _db.BoardGames
+            .Where(g => g.StatusId == 1 || g.StatusId == 3)
+            .Select(g => new
+            {
+                g.Id,
+                g.Title,
+                g.Description,
+                g.Image
+            }).ToList();
 
         return Json(games);
     }
@@ -127,15 +129,25 @@ public class HomeController : Controller
         }
         BoardGame? game = _db.BoardGames.FirstOrDefault(g => g.Id == request);
 
-        if (game == null) return StatusCode(418, "I'm a teapot");
+        // GAME NOT FOUND        
+        if (game == null)
+            return StatusCode(418, "I'm a teapot"); 
         
-        if (game.StatusId != 1 && game.StatusId != 3) return Conflict();
-        
+        // GAME NOT AVAILABLE
+        if (game.StatusId != 1 && game.StatusId != 3)
+            return Conflict();
+
         int userID;
-        if (!int.TryParse(userId, out userID)) return StatusCode(418, "I'm a teapot");
+        // USER NOT FOUND
+        if (!int.TryParse(userId, out userID)) 
+            return StatusCode(418, "I'm a teapot");
 
-
-        if (_db.BoardGameUsers.Count(bgu => bgu.UserId == userID && (bgu.ReturnDate == null || DateTime.Now < bgu.ReturnDate)) > 3) return Unauthorized();
+        // TOO MANY BOARD GAMES REQUESTED/BORROWED
+        if (_db.BoardGameUsers.Count(bgu =>
+                bgu.UserId == userID &&
+                (bgu.ReturnDate == null || DateTime.Now < bgu.ReturnDate)
+            ) > 3) 
+            return Unauthorized();
 
         game.StatusId = 3;
 
