@@ -18,7 +18,7 @@ function renderGames(games) {
         const li = document.createElement('li');
         li.className = 'card';
         li.innerHTML = `
-            ${game.imageUrl}
+            <img src="${game.image}" class="images"/>
             <article class="content">
                 <h1>${game.title}</h1>
                 <p>${game.description}</p>

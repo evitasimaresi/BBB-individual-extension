@@ -35,10 +35,10 @@
     <h2 class="game-upload-page-title">Game Uploading Form</h2>
 
     <!-- Upload Form -->
-    <form class="game-upload-form">
+    <form class="game-upload-form" method="post" action="@Url.Action("AddGame", "Admin")" enctype="multipart/form-data">
       <section>
         <label for="gameTitle" style="display:block; font-weight:bold; margin-bottom:5px;">Game Title</label>
-        <input type="text" id="gameTitle" name="gameTitle" placeholder="Enter game title">
+        <input type="text" id="gameTitle" name="gameTitle" placeholder="Enter game title" required>
       </section>
 
       <section>

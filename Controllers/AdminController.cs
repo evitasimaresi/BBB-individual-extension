@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using BBB.Data;
+using BBB.Models;
 
 public class AdminController : Controller
 {
@@ -27,6 +28,37 @@ public class AdminController : Controller
             return RedirectToAction("Index", "Home");
 
         return View();
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> AddGame(string gameTitle, string gameDesc, IFormFile gameCover)
+    {
+        string relativePath = "";
+
+        if (gameCover != null && gameCover.Length > 0)
+        {
+            string fileName = Guid.NewGuid() + Path.GetExtension(gameCover.FileName);
+
+            string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+            Directory.CreateDirectory(folderPath);
+
+            string savePath = Path.Combine(folderPath, fileName);
+            using (var stream = new FileStream(savePath, FileMode.Create))
+            {
+                await gameCover.CopyToAsync(stream);
+            }
+
+            relativePath = "/Images/" + fileName;
+        }
+        
+        if (!string.IsNullOrWhiteSpace(gameTitle))
+        {
+            var game = new BoardGame { Title = gameTitle, Description = gameDesc, Image = relativePath, StatusId = 1 };
+            _db.BoardGames.Add(game);
+            _db.SaveChanges();
+        }
+
+        return RedirectToAction("Index", "Home");
     }
 
     public IActionResult ApproveReturn()

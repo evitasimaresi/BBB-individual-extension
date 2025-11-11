@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+
 
 namespace BBB.Controllers;
 
@@ -23,10 +25,38 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        bool allowEdit = false;
-
         var userId = HttpContext.Session.GetString("UserId");
         int userID;
+        
+        var users = _db.Users.ToList();
+        foreach (var xd in users)
+        {
+            // var auth = _db.Auths.FirstOrDefault(a => a.UserId == xd.Id);
+            // if (auth == null) continue;
+
+            // // Generate random 16-byte salt
+            // byte[] salt = RandomNumberGenerator.GetBytes(16);
+            // string saltBase64 = Convert.ToBase64String(salt);
+
+            // // Hash the existing plain password using static PBKDF2Hasher
+            // byte[] hash = Services.PBKDF2Hasher.Hash(auth.PasswordHash, salt);
+            // string hashBase64 = Convert.ToBase64String(hash);
+
+            // // Store back in DB
+            // auth.Token = saltBase64;           // salt
+            // auth.PasswordHash = hashBase64;    // hashed password
+            // _db.Entry(auth).State = EntityState.Modified;
+
+            Debug.WriteLine(_db.Auths.FirstOrDefault(a => a.UserId == xd.Id).PasswordHash);
+        }
+    
+        // // Save changes
+        // _db.SaveChanges();
+
+
+
+
+
         if (!int.TryParse(userId, out userID)) return View(false);
 
         var user = _db.Users.FirstOrDefault(u => u.Id == userID);
@@ -84,13 +114,15 @@ public class HomeController : Controller
     [HttpGet]
     public IActionResult GetGames()
     {
-        var games = _db.BoardGames.Select(g => new
-        {
-            g.Id,
-            g.Title,
-            g.Description,
-            g.Link
-        }).ToList();
+        var games = _db.BoardGames
+            .Where(g => g.StatusId == 1 || g.StatusId == 3)
+            .Select(g => new
+            {
+                g.Id,
+                g.Title,
+                g.Description,
+                g.Image
+            }).ToList();
 
         return Json(games);
     }
@@ -108,15 +140,25 @@ public class HomeController : Controller
         }
         BoardGame? game = _db.BoardGames.FirstOrDefault(g => g.Id == request);
 
-        if (game == null) return StatusCode(418, "I'm a teapot");
-
-        if (game.StatusId != 1 && game.StatusId != 3) return Conflict();
+        // GAME NOT FOUND        
+        if (game == null)
+            return StatusCode(418, "I'm a teapot"); 
+        
+        // GAME NOT AVAILABLE
+        if (game.StatusId != 1 && game.StatusId != 3)
+            return Conflict();
 
         int userID;
-        if (!int.TryParse(userId, out userID)) return StatusCode(418, "I'm a teapot");
+        // USER NOT FOUND
+        if (!int.TryParse(userId, out userID)) 
+            return StatusCode(418, "I'm a teapot");
 
-
-        if (_db.BoardGameUsers.Count(bgu => bgu.UserId == userID && (bgu.ReturnDate == null || DateTime.Now < bgu.ReturnDate)) > 3) return Unauthorized();
+        // TOO MANY BOARD GAMES REQUESTED/BORROWED
+        if (_db.BoardGameUsers.Count(bgu =>
+                bgu.UserId == userID &&
+                (bgu.ReturnDate == null || DateTime.Now < bgu.ReturnDate)
+            ) > 3) 
+            return Unauthorized();
 
         game.StatusId = 3;
 
@@ -129,7 +171,7 @@ public class HomeController : Controller
             }
         );
 
-
+        _db.SaveChanges();
 
         return Ok(new { message = $"Game borrowed by {username}" });
     }
