@@ -10,7 +10,12 @@
 <div class="approve-cards-container">
     @foreach (var bgu in Model)
     {
-        <div class="approve-card" data-id="@bgu.Id">
+        var hasConflict = Model.Any(x => x.BoardGame.Id == bgu.BoardGame.Id && x.Id != bgu.Id);
+        <div class="approve-card @(hasConflict ? "linked-card" : "")" data-id="@bgu.Id" data-boardgameid="@bgu.BoardGame.Id">
+            @if (hasConflict)
+            {
+                <span class="linked-marker">[Linked Request #@bgu.BoardGame.Id]</span>
+            }
             <h3>Request ID: @bgu.Id</h3>
             <h3>Board Game:</h3>
             <p>ID: @bgu.BoardGame.Id</p>
@@ -33,21 +38,39 @@
 <script>
     const approveCards = document.querySelectorAll(".approve-card");
 
+    function updateLinked(card) {
+        const boardGameId = card.dataset.boardgameid;
+        const linkedCards = Array.from(approveCards).filter(c => c.dataset.boardgameid === boardGameId);
+        const approve = card.querySelector(".approve-checkbox");
+        const deny = card.querySelector(".deny-checkbox");
+
+        if(approve.checked) {
+            linkedCards.forEach(c => {
+                if(c !== card) {
+                    c.querySelector(".approve-checkbox").checked = false;
+                    c.querySelector(".deny-checkbox").checked = true;
+                    c.classList.add("processed");
+                }
+            });
+        }
+    }
+
     approveCards.forEach(card => {
         const approve = card.querySelector(".approve-checkbox");
         const deny = card.querySelector(".deny-checkbox");
 
         approve.addEventListener("change", () => {
-            if (approve.checked) {
+            if(approve.checked) {
                 card.classList.add("processed");
                 deny.checked = false;
+                updateLinked(card);
             } else {
                 card.classList.remove("processed");
             }
         });
 
         deny.addEventListener("change", () => {
-            if (deny.checked) {
+            if(deny.checked) {
                 card.classList.add("processed");
                 approve.checked = false;
             } else {
@@ -57,10 +80,24 @@
     });
 
     document.getElementById("approve-all").addEventListener("click", () => {
+        const grouped = {};
         approveCards.forEach(card => {
-            card.querySelector(".approve-checkbox").checked = true;
-            card.querySelector(".deny-checkbox").checked = false;
-            card.classList.add("processed");
+            const bgId = card.dataset.boardgameid;
+            if(!grouped[bgId]) grouped[bgId] = [];
+            grouped[bgId].push(card);
+        });
+
+        Object.values(grouped).forEach(group => {
+            group.forEach((card, index) => {
+                if(index === 0) {
+                    card.querySelector(".approve-checkbox").checked = true;
+                    card.querySelector(".deny-checkbox").checked = false;
+                } else {
+                    card.querySelector(".approve-checkbox").checked = false;
+                    card.querySelector(".deny-checkbox").checked = true;
+                }
+                card.classList.add("processed");
+            });
         });
     });
 
@@ -98,6 +135,17 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(decisions)
-        }).then(() => window.location.reload());
+        })
+        .then(async response => {
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                alert("Error: " + errorMessage);
+                return;
+            }
+            window.location.reload();
+        })
+        .catch(error => {
+            alert("Network or server error: " + error.message);
+        });
     });
 </script>

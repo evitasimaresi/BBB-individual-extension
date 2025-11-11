@@ -479,3 +479,13 @@ footer {
 .approve-card.processed {
     background-color: var(--gray-500);
 }
+
+.linked-card {
+    border: var(--border-width-thick) solid var(--orange-500) !important;
+}
+
+.linked-marker {
+    color: var(--orange-500);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+}

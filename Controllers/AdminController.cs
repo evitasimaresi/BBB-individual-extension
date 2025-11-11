@@ -92,15 +92,89 @@ public class AdminController : Controller
     [HttpPost]
     public IActionResult SaveApproveReturn([FromBody] List<BoardGameUserDecisionDto> decisions)
     {
-        var bruh = "bruh";
-        bruh = "67";
-        foreach (var decision in decisions)
+        if (decisions == null || !decisions.Any())
+            return BadRequest("No decisions received.");
+
+        // Check for duplicate BoardGameUserIds in the incoming decisions
+        var duplicateIds = decisions.GroupBy(d => d.BoardGameUserId)
+                                    .Where(g => g.Count() > 1)
+                                    .Select(g => g.Key)
+                                    .ToList();
+        if (duplicateIds.Any())
+            return BadRequest($"Duplicate BoardGameUserIds found: {string.Join(", ", duplicateIds)}");
+
+        // Fetch all unresolved borrow requests
+        var requests = _db.BoardGameUsers
+            .Include(r => r.User)
+            .Include(r => r.BoardGame)
+            .Where(r => r.ReturnDate == null)
+            .Where(r => r.BoardGame.StatusId == 3)
+            .OrderBy(r => r.BoardGame.Id)
+            .ThenBy(r => r.BorrowDate)
+            .ThenBy(r => r.Id)
+            .ToList();
+        
+        // Check count
+        if (requests.Count != decisions.Count)
+            return BadRequest($"Mismatch in number of requests and decisions: Db requests: {requests.Count} Decisions: {decisions.Count}");
+        
+        // Validate linked entities
+        var requestMap = new Dictionary<int, List<int>>(); // BoardGameId -> Descision
+        foreach (var r in requests)
         {
-            // db update
+            // Find all decisions for this BoardGameUser
+            var decisionResults = decisions
+                .Where(d => d.BoardGameUserId == r.Id)
+                .Select(d => d.Result)
+                .ToList();
+
+            if (!requestMap.ContainsKey(r.BoardGame.Id))
+                requestMap[r.BoardGame.Id] = new List<int>();
+
+            requestMap[r.BoardGame.Id].AddRange(decisionResults);
         }
 
-        // _db.SaveChanges();
+        foreach (var boardGameId in requestMap.Keys)
+        {
+            var values = requestMap[boardGameId];
 
+            var countApprove = values.Count(v => v == 1);
+            var countDeny = values.Count(v => v == 2);
+            var countNone = values.Count(v => v == 0);
+
+            bool isValid = false;
+
+            if (countNone == values.Count)
+                isValid = true;
+            else if (countApprove == 1 && countDeny == values.Count - 1 && countNone == 0)
+                isValid = true;
+
+            if (!isValid)
+            {
+                var errorResponse = new
+                {
+                    BoardGameId = boardGameId,
+                    Decisions = values,
+                    Message = "Invalid decision data: either multiple approvals or a mix of approve/deny/unmarked detected."
+                };
+
+                return BadRequest(errorResponse);
+            }
+        }
+
+        // All validations passed, update database
+        /*
+        foreach (var decision in decisions)
+        {
+            var bgu = _db.BoardGameUsers.Find(decision.BoardGameUserId);
+            if (bgu != null)
+            {
+                bgu.ReturnDecision = decision.Result; // Assuming you have a property to save
+            }
+        }
+
+        _db.SaveChanges();
+        */
         return Ok();
     }
 }
