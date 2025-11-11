@@ -80,7 +80,10 @@ public class AdminController : Controller
             .Include(r => r.User)
             .Include(r => r.BoardGame)
             .Where(r => r.ReturnDate == null)
-            .Where(r => r.BoardGame.StatusId == 3)
+            .Where(r => r.BoardGame.StatusId == 3)      // All the unresolved borrow requests
+            .OrderBy(r => r.BoardGame.Id)               // Group by BoardGame.Id (lowest first)
+            .ThenBy(r => r.BorrowDate)                  // Sort by earliest BorrowDate
+            .ThenBy(r => r.Id)                          // Tiebreaker: lower BoardGameUser.Id first
             .ToList();
 
         return View(requests);

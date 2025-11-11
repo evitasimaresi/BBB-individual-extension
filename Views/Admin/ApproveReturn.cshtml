@@ -11,7 +11,8 @@
     @foreach (var bgu in Model)
     {
         <div class="approve-card" data-id="@bgu.Id">
-            <h3>Board Game:</h3> 
+            <h3>Request ID: @bgu.Id</h3>
+            <h3>Board Game:</h3>
             <p>ID: @bgu.BoardGame.Id</p>
             <p>Title: @bgu.BoardGame.Title</p>
             <h3>User:</h3>
