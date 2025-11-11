@@ -72,12 +72,9 @@ public class HomeController : Controller
         if (!int.TryParse(userId, out var userID))
             return RedirectToAction("Index", "Home");
 
-        var user = _db.Users
-            .Where(u => u.Id == userID)
-            .Select(u => new { u.Role.Name })
-            .FirstOrDefault();
+        bool userExists = _db.Users.Any(u => u.Id == userID);
 
-        if (user == null)
+        if (!userExists)
             return RedirectToAction("Index", "Home");
         return View();
     }

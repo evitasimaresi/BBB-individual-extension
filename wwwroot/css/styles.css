@@ -75,6 +75,26 @@ footer {
   margin: var(--margin-lg);
 }
 
+.username {
+  color: var(--white);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base) !important;
+  margin: 0;
+  display: inline-block;
+}
+
+.username:hover {
+  color: var(--gray-300) !important;
+}
+
+.user_navbar {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  cursor: pointer;
+  margin-right: var(--margin-sm);
+}
+
 .searchbar {
   background-color: var(--white);
   border-radius: var(--border-radius-2x1);
