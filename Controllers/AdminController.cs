@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
 using BBB.Data;
 using BBB.Models;
+using Microsoft.EntityFrameworkCore;
 
 public class AdminController : Controller
 {
@@ -76,6 +75,47 @@ public class AdminController : Controller
             return RedirectToAction("Index", "Home");
 
         return View();
+    }
+
+    // for editing games:
+
+    // GET game
+    [HttpGet]
+    public IActionResult GetOneGame(int gameId)
+    {
+        var oneGame = _db.BoardGames.Find(gameId);
+        // BoardGame? oneGame = _db.BoardGames.FirstOrDefault(g => g.Id == gameId);
+        if (oneGame == null)
+            return Json(null);
+        return Json(oneGame);
+    }
+
+    // POST updated game
+    [HttpPost]
+    public IActionResult EditGame(BoardGame oneGame)
+    {
+        if (ModelState.IsValid)
+        {
+            _db.Entry(oneGame).State = EntityState.Modified;
+            _db.SaveChanges();
+            return Ok();
+        }
+        return View(oneGame);
+    }
+
+    // POST delete game
+    [HttpPost]
+    public IActionResult DeleteGame(int Id)
+    {
+        var oneGame = _db.BoardGames.Find(Id);
+        if (oneGame != null)
+        {
+            _db.BoardGames.Remove(oneGame);
+            _db.SaveChanges();
+        }
+
+        // should probably return an http message
+        return Ok();
     }
 
     

@@ -25,8 +25,8 @@ function renderGames(games) {
                 <section class="button-container">
                     <Span>Available</Span>
                     <div style="display:flex; gap:12px">
-                        ${allowEdit ? '<button class="button button-primary edit-button">Edit</button>' : ''}
-                        <button class="button button-primary" data-id="${game.id}">Borrow</button>
+                        ${allowEdit ? `<button class="button button-primary edit-button" data-id="${game.id}">Edit</button>` : ''}
+                        <button class="button button-primary borrow-button" data-id="${game.id}">Borrow</button>
                     </div>
                 </section>
             </article>`
@@ -36,13 +36,21 @@ function renderGames(games) {
     });
 
     // Attach click listeners
-    document.querySelectorAll('.button-primary').forEach(button => {
+    document.querySelectorAll('.borrow-button').forEach(button => {
         button.addEventListener('click', function () {
             const gameId = this.getAttribute('data-id');
             borrowGame(gameId, this);
         });
     });
 }
+
+    document.getElementById('main-content').addEventListener('click', function (e) {
+        if (e.target.classList.contains('edit-button')) {
+        const gameId = e.target.getAttribute('data-id');
+        openModal(gameId);
+            
+        }
+    });
 
 // Borrow game
 function borrowGame(gameId, buttonElement) {
@@ -78,3 +86,48 @@ document.getElementById('filterInput').addEventListener('input', function() {
 
     renderGames(filtered);
 });
+
+
+// populate the EDIT GAME pop-up form
+
+function openModal(gameId)
+{
+    fetch(`/Admin/GetOneGame/${gameId}`) // in admincontroller
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('gameId').value = data.Id;
+        document.getElementById('gameTitle').value = data.Title;
+        document.getElementById('gameDesc').value = data.Description;
+        //document.getElementById('gameCover').value = data.Image;
+        // what is const dialog?
+        const dialog = document.getElementById('editGame');
+        dialog.showModal();
+   })
+    // .catch(error => console.error('Error fetching games:', error));
+
+}
+
+// Save button
+document.getElementById('editGame').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+
+  fetch('/Admin/EditGame', {
+    method: 'POST',
+    body: formData
+  }).then(() => location.reload());
+});
+
+// Delete button
+document.getElementById('deleteGameButton').addEventListener('click', function () {
+  const gameId = document.getElementById('gameId').value;
+  fetch(`/Admin/DeleteGame/${gameId}`, {
+    method: 'POST'
+  }).then(() => location.reload());
+});
+
+// Cancel button
+document.getElementById('cancelEditButton').addEventListener('click', function () {
+  document.getElementById('editGame').close();
+});
+
