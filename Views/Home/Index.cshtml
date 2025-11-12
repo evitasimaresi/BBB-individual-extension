@@ -169,9 +169,40 @@
         </section>
 
     </main>
+
+    @* I bet there's a better way to do this than copying the game form again - how do I do this? *@
+
+    <dialog id="editGame">
+
+            <!-- Editing Form -->
+            <form class="game-edit-form" method="post" enctype="multipart/form-data">
+            <!--why do I need hidden gam ID?-->
+            <input type="hidden" id="gameId" name="Id" />
+
+            <section>
+                <label for="gameTitle" style="display:block; font-weight:bold; margin-bottom:5px;">Game Title</label>
+                <input type="text" id="gameTitle" name="gameTitle" required>
+            </section>
+
+            <section>
+                <label for="gameCover" style="display:block; font-weight:bold; margin-bottom:5px;">Game Cover</label>
+                <input type="file" id="gameCover" name="gameCover" accept="image/*">
+            </section>
+
+            <section>
+                <label for="gameDesc" style="display:block; font-weight:bold; margin-bottom:5px;">Description</label>
+                <textarea id="gameDesc" name="gameDesc" rows="4"></textarea>
+            </section>
+
+            <button id = "deleteGameButton">Delete</button> @*put it in the left bottom corner*@
+            <button id = "cancelEditButton">Cancel</button>
+            <button class="button button-primary" type="submit">Save</button>
+            
+            </form>
+    </dialog>
     
     <script>const allowEdit = @(Model ? "true" : "false");</script>
-    <script src="/js/renderBoardGames.js"></script>
+    <script src="~/js/renderBoardGames.js"></script>
 
 </body>
 

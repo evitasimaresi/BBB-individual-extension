@@ -35,8 +35,40 @@
             <button type="submit" class="button button-primary">Register</button>
         </form>
 
+        <dialog id="dialog-box">
+            <h2>Verify your email address</h2>
+            <div>
+            <p>We have sent a verification link to your email address! Click on the link in the email to complete the registration.</p>
+            <button id="close-dialog" autofocus>Close</button>
+            </div>
+        </dialog>
+
+    </main>
+    <script src="~/js/registrationValidation.js"></script>
+</body>
+
+</html>
+
+
+
+@* <body>
+    <main class="login-card">
+
+        <header>
+            <h1>Register</h1>
+        </header>
+
+        <form id=registerFrom action="/Account/Login method="get">
+            <input type="text" placeholder="Username" required />
+            <input type="text" placeholder="Email address" required />
+            <input type="password" placeholder="Password" required />
+            <button id=submit type="submit" class="button button-primary">Register</button>
+        </form>
+
+        
+
     </main>
     <script src="~/js/registerValidation.js"></script>
 </body>
 
-</html>
+</html> *@
