@@ -1,7 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
 using BBB.Data;
 using BBB.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 public class AdminController : Controller
 {
@@ -83,11 +85,22 @@ public class AdminController : Controller
     [HttpGet]
     public IActionResult GetOneGame(int gameId)
     {
-        var oneGame = _db.BoardGames.Find(gameId);
-        // BoardGame? oneGame = _db.BoardGames.FirstOrDefault(g => g.Id == gameId);
+        BoardGame? oneGame = _db.BoardGames.FirstOrDefault(g => g.Id == gameId);
+        
         if (oneGame == null)
             return Json(null);
-        return Json(oneGame);
+
+        BoardGame result = new BoardGame
+        {
+            Id = oneGame.Id,
+            Title = oneGame.Title,
+            Description = oneGame.Description,
+            Image = oneGame.Image,
+            Condition = oneGame.Condition,
+            Link = oneGame.Link
+        };
+
+        return Json(result);
     }
 
     // POST updated game
@@ -117,10 +130,4 @@ public class AdminController : Controller
         // should probably return an http message
         return Ok();
     }
-
-    
-
-
-
-
 }

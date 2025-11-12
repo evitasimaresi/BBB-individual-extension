@@ -35,22 +35,21 @@ function renderGames(games) {
         list.appendChild(li);
     });
 
-    // Attach click listeners
+    // Attach listeners after rendering
     document.querySelectorAll('.borrow-button').forEach(button => {
         button.addEventListener('click', function () {
             const gameId = this.getAttribute('data-id');
             borrowGame(gameId, this);
         });
     });
-}
 
-    document.getElementById('main-content').addEventListener('click', function (e) {
-        if (e.target.classList.contains('edit-button')) {
-        const gameId = e.target.getAttribute('data-id');
-        openModal(gameId);
-            
-        }
+    document.querySelectorAll('.edit-button').forEach(button => {
+        button.addEventListener('click', function () {
+            const gameId = this.getAttribute('data-id');
+            openModal(gameId);
+        });
     });
+}
 
 // Borrow game
 function borrowGame(gameId, buttonElement) {
@@ -92,7 +91,13 @@ document.getElementById('filterInput').addEventListener('input', function() {
 
 function openModal(gameId)
 {
-    fetch(`/Admin/GetOneGame/${gameId}`) // in admincontroller
+    fetch(`/Admin/GetOneGame?gameId=${gameId}`)
+    .then(async response => {
+            const errorMessage = await response.json();
+            alert("Error: " + errorMessage);
+            return;
+    })
+    /*
     .then(response => response.json())
     .then(data => {
         document.getElementById('gameId').value = data.Id;
@@ -104,7 +109,7 @@ function openModal(gameId)
         dialog.showModal();
    })
     // .catch(error => console.error('Error fetching games:', error));
-
+    */
 }
 
 // Save button
@@ -130,4 +135,3 @@ document.getElementById('deleteGameButton').addEventListener('click', function (
 document.getElementById('cancelEditButton').addEventListener('click', function () {
   document.getElementById('editGame').close();
 });
-
