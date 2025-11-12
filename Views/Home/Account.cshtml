@@ -1,52 +1,176 @@
+@model BBB.Models.EditAccountModel
 @{
     ViewData["Title"] = "Account Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-<html lang="en">
+<main class="account-page" style="padding: var(--padding-md);">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User Info - Board Games Library</title>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-        rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="/Images/logo.png">
-</head>
-
-<body>
-
-        <!-- User Stats Section -->
-        <section class="user-info-container">
+    <!-- USER INFORMATION SECTION -->
+    <section class="user-info-container">
+        <header>
             <h2 class="user-info-title">User Information</h2>
-            <p><strong>Username:</strong> boardgamefan42</p>
-            <p><strong>Email:</strong> fan42@gamesmail.com</p>
-            <p><strong>Number of Borrowed Games:</strong> 3</p>
-            <footer class="user-info-footer">
-                <button class=" button button-primary">Edit</button>
-            </footer>
-        </section>
+        </header>
 
-        <!-- Current Borrowed Games Section -->
-        <h2 class="borrowed-title">Currently Borrowed Games</h2>
+        <article>
+            <p><strong>Username:</strong> @Model.Username</p>
+            <p><strong>Email:</strong> @Model.Email</p>
+            <p><strong>Number of Borrowed Games:</strong> @Model.BorrowedCount</p>
+        </article>
 
-        <!-- Game Card -->
-        <li class="card" id="accountcard">
-            <img class="images" src="Images/catan.webp" alt="Catan board game package">
-            <article class="content">
-                <h1>Catan</h1>
-                <p>This is a short description of the game.</p>
-                <footer class="button-container">
-                    <button class="button button-primary">Return</button>
+        <footer class="user-info-footer">
+            <button id="editToggleBtn" class="button button-primary" type="button">Edit</button>
+        </footer>
+    </section>
+
+    @* Show messages *@
+    @if (!string.IsNullOrEmpty(Model.Error))
+    {
+        <div class="alert-danger">@Model.Error</div>
+    }
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert-success">@Model.Message</div>
+    }
+
+    <!-- EDIT FORM SECTION -->
+    <section id="editFormSection" class="edit-section" style="margin-top: 24px; display: none;">
+        <header>
+            <h3>Edit Account Information</h3>
+        </header>
+
+        <form asp-controller="Home" asp-action="Account" method="post">
+            @Html.AntiForgeryToken()
+            <fieldset style="border: none; padding: 0;">
+                <legend class="sr-only">Edit Account</legend>
+
+                <label for="Username">Username</label>
+                <input id="Username" name="Username" type="text" value="@Model.Username" required />
+
+                <label for="Email">Email</label>
+                <input id="Email" name="Email" type="email" value="@Model.Email" required />
+
+                <label for="NewPassword">New Password</label>
+                <div class="password-wrapper">
+                    <input id="NewPassword" name="NewPassword" type="password"
+                        placeholder="Leave blank to keep current" />
+                    <button type="button" class="eye-btn" data-target="#NewPassword"
+                        aria-label="Show or hide password"></button>
+                </div>
+
+                <label for="ConfirmPassword">Confirm New Password</label>
+                <div class="password-wrapper">
+                    <input id="ConfirmPassword" name="ConfirmPassword" type="password"
+                        placeholder="Repeat new password" />
+                    <button type="button" class="eye-btn" data-target="#ConfirmPassword"
+                        aria-label="Show or hide password"></button>
+                </div>
+
+                <footer class="form-actions">
+                    <button class="button button-primary" type="submit">Save</button>
+                    <button id="cancelEditBtn" class="button button-primary" type="button">Cancel</button>
                 </footer>
-            </article>
-        </li>
+            </fieldset>
+        </form>
+    </section>
 
-</body>
 
-</html>
+    <!-- BORROWED GAMES SECTION -->
+    <section class="borrowed-games" style="margin-top: 32px;">
+        <header>
+            <h2>Currently Borrowed Games</h2>
+        </header>
+
+        <ul>
+            <li class="card">
+                <img class="images" src="/Images/catan.webp" alt="Catan board game package" />
+                <article class="content">
+                    <h3>Catan</h3>
+                    <p>This is a short description of the game.</p>
+                    <footer class="button-container">
+                        <button class="button button-primary">Return</button>
+                    </footer>
+                </article>
+            </li>
+        </ul>
+    </section>
+</main>
+
+
+<!-- Edit part & password visibility -->
+<script>
+    const editToggleBtn = document.getElementById("editToggleBtn");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+    const editFormSection = document.getElementById("editFormSection");
+
+    function toggleForm(show) {
+        editFormSection.style.display = show ? "block" : "none";
+    }
+
+    editToggleBtn?.addEventListener("click", () => toggleForm(true));
+    cancelEditBtn?.addEventListener("click", () => toggleForm(false));
+
+    document.querySelectorAll(".eye-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const target = document.querySelector(btn.dataset.target);
+            if (!target) return;
+            target.type = target.type === "password" ? "text" : "password";
+        });
+    });
+</script>
+
+<style>
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: 600;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 8px;
+    }
+
+    .password-wrapper {
+        position: relative;
+    }
+
+    .eye-btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .alert-danger {
+        background: #441a1a;
+        color: #ffb3b3;
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+
+    .alert-success {
+        background: #1c3d27;
+        color: #a7f3d0;
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+
+    .form-actions {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 20px;
+        background: none;
+        margin-top: 20px;
+    }
+</style>
