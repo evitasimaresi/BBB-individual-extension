@@ -182,53 +182,72 @@ footer {
   color: var(--orange-400);
 }
 
-.card {
-  display: flex;
-  background-color: var(--gray-100);
-  border-radius: var(--border-radius-lg);
-  box-shadow: 0 2px 8px #0000001a;
-  overflow: hidden;
-  margin: var(--margin-none);
-  margin-bottom: var(--margin-md);
-}
-
 #accountcard {
-  margin: 20px
+    margin: 20px
 }
 
-.card .image {
-  width: 30%;
-  object-fit: cover;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+/* GAME CARDS */
+
+.card {
+    display: flex;
+    align-items: stretch;
+    background-color: var(--gray-100);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 2px 8px #0000001a;
+    overflow: hidden;
+    margin: var(--margin-none);
+    margin-bottom: var(--margin-md);
+    width: 100%;
+    gap: var(--gap-sm);
+}
+
+.card .images {
+    flex: 0 0 12.5%;
+    width: 12.5%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    height: auto;
+    align-self: flex-start;
 }
 
 .card .content {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: var(--gap-sm);
-  flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--gap-sm);
+    flex: 1 1 87.5%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    gap: var(--gap-sm);
 }
 
 .card .content h1 {
-  font-size: var(--font-size-base);
-  margin: var(--margin-none);
-  color: var(--gray-800);
+    font-size: var(--font-size-lg);
+    margin: var(--margin-none);
+    color: var(--gray-800);
+    word-break: break-word;
+    flex-shrink: 0;
 }
 
 .card .content p {
-  font-size: var(--font-size-base);
-  color: var(--gray-600);
-  margin: 2px 0;
+    font-size: var(--font-size-base);
+    color: var(--gray-600);
+    margin: 0;
+    word-break: break-word;
+    flex-grow: 1;
 }
 
 .card .content .button-container {
-  margin-top: auto;
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    flex-shrink: 0;
 }
+
+/* SIDEBAR */
 
 .sidebar {
   position: fixed;
@@ -317,11 +336,6 @@ footer {
   margin-left: 200px;
   /* same width as sidebar */
   /*transform: scale(0.98);*/
-}
-
-.images {
-  width: auto;
-  height: 170px;
 }
 
 /* Account page */
