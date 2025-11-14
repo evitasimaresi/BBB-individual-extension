@@ -92,24 +92,24 @@ document.getElementById('filterInput').addEventListener('input', function() {
 function openModal(gameId)
 {
     fetch(`/Admin/GetOneGame?gameId=${gameId}`)
-    .then(async response => {
+    /*.then(async response => {
             const errorMessage = await response.json();
             alert("Error: " + errorMessage);
             return;
-    })
-    /*
+    })*/
+    
     .then(response => response.json())
     .then(data => {
-        document.getElementById('gameId').value = data.Id;
-        document.getElementById('gameTitle').value = data.Title;
-        document.getElementById('gameDesc').value = data.Description;
+        document.getElementById('gameId').value = data.id;
+        document.getElementById('gameTitle').value = data.title;
+        document.getElementById('gameDesc').value = data.description;
         //document.getElementById('gameCover').value = data.Image;
         // what is const dialog?
         const dialog = document.getElementById('editGame');
         dialog.showModal();
    })
     // .catch(error => console.error('Error fetching games:', error));
-    */
+    
 }
 
 // Save button
