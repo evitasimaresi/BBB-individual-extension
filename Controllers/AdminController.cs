@@ -62,7 +62,8 @@ public class AdminController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    public IActionResult ApproveReturn()
+    /* Approve Form */ 
+    public IActionResult ApproveForm()
     {
         var userId = HttpContext.Session.GetString("UserId");
         if (!int.TryParse(userId, out var userID))
@@ -90,7 +91,7 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    public IActionResult SaveApproveReturn([FromBody] List<BoardGameUserDecisionDto> decisions)
+    public IActionResult SaveApproveForm([FromBody] List<BoardGameUserDecisionDto> decisions)
     {
         if (decisions == null || !decisions.Any())
             return BadRequest("No decisions received.");
@@ -187,8 +188,59 @@ public class AdminController : Controller
         return Ok();
     }
 
-    // for editing games:
+    /* Return Form */
+    public IActionResult ReturnForm()
+    {
+        var userId = HttpContext.Session.GetString("UserId");
+        if (!int.TryParse(userId, out var uid))
+            return RedirectToAction("Index", "Home");
 
+        var user = _db.Users
+            .Where(u => u.Id == uid)
+            .Select(u => u.Role.Name)
+            .FirstOrDefault();
+
+        if (user != "admin")
+            return RedirectToAction("Index", "Home");
+
+        var borrowed = _db.BoardGameUsers
+            .Include(r => r.User)
+            .Include(r => r.BoardGame)
+            .Where(r => r.ReturnDate == null)
+            .Where(r => r.BoardGame.StatusId == 2)
+            .OrderBy(r => r.BorrowDate)
+            .ToList();
+
+        return View(borrowed);
+    }
+
+    [HttpPost]
+    public IActionResult SaveReturnForm([FromBody] List<ReturnDto> results)
+    {
+        if (results == null || !results.Any())
+            return BadRequest("No data received.");
+
+        foreach (var r in results)
+        {
+            if (!r.Returned)
+                continue;
+
+            var bgu = _db.BoardGameUsers
+                .Include(x => x.BoardGame)
+                .FirstOrDefault(x => x.Id == r.BoardGameUserId);
+
+            if (bgu == null)
+                return BadRequest($"Borrow record {r.BoardGameUserId} not found.");
+
+            bgu.ReturnDate = DateTime.Now;
+            bgu.BoardGame.StatusId = 1;
+        }
+
+        _db.SaveChanges();
+        return Ok();
+    }
+
+    // for editing games:
     // GET game
     [HttpGet]
     public IActionResult GetOneGame(int gameId)

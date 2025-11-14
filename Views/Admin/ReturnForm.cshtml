@@ -1,0 +1,75 @@
+@model List<BBB.Models.BoardGameUser>
+
+<div class="return-top-buttons">
+    <button id="return-all">Mark All Returned</button>
+    <button id="reset-all">Reset</button>
+    <button id="save-changes">Save Changes</button>
+</div>
+
+<div class="return-cards-container">
+    @foreach (var bgu in Model)
+    {
+        <div class="return-card" data-id="@bgu.Id">
+            <h3>Borrow ID: @bgu.Id</h3>
+            <h3>Board Game:</h3>
+            <p>ID: @bgu.BoardGame.Id</p>
+            <p>Title: @bgu.BoardGame.Title</p>
+            <h3>User:</h3>
+            <p>Username: @bgu.User.Username</p>
+            <p>Borrowed: @bgu.BorrowDate.ToString("dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture)</p>
+            <div class="return-checkboxes">
+                <label class="return-checkbox-label">
+                    <input type="checkbox" class="return-checkbox" /> Returned
+                </label>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    const cards = document.querySelectorAll(".return-card");
+
+    document.getElementById("return-all").addEventListener("click", () => {
+        cards.forEach(card => {
+            card.querySelector(".return-checkbox").checked = true;
+            card.classList.add("processed");
+        });
+    });
+
+    document.getElementById("reset-all").addEventListener("click", () => {
+        cards.forEach(card => {
+            card.querySelector(".return-checkbox").checked = false;
+            card.classList.remove("processed");
+        });
+    });
+
+    cards.forEach(card => {
+        const checkbox = card.querySelector(".return-checkbox");
+        checkbox.addEventListener("change", () => {
+            if (checkbox.checked) card.classList.add("processed");
+            else card.classList.remove("processed");
+        });
+    });
+
+    document.getElementById("save-changes").addEventListener("click", () => {
+        const results = Array.from(cards).map(card => ({
+            BoardGameUserId: parseInt(card.dataset.id),
+            Returned: card.querySelector(".return-checkbox").checked
+        }));
+
+        fetch("/Admin/SaveReturnForm", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(results)
+        })
+        .then(async response => {
+            if (!response.ok) {
+                const msg = await response.text();
+                alert("Error: " + msg);
+                return;
+            }
+            window.location.reload();
+        })
+        .catch(err => alert("Network or server error: " + err.message));
+    });
+</script>

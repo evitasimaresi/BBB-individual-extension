@@ -411,31 +411,7 @@ footer {
   }
 }
 
-/* Approve Page OLD */
-/*
-.requests-container {
-    display: flex;
-    align-items:center;
-    flex-direction: column;
-    gap: 0;
-}
-
-.request-card {
-    margin: var(--margin-sm);
-    padding: var(--padding-md);
-    border: var(--border-width-thin) solid var(--gray-500);
-    border-radius: var(--border-radius-lg);
-    background: var(--gray-50);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.request-details {
-    display: flex;
-    flex-direction: column;
-}
-*/
-
-/* Approve Page */
+/* Approve Form */
 .approve-top-buttons {
     display: flex;
     flex-direction: row;
@@ -522,4 +498,72 @@ footer {
     color: var(--orange-500);
     font-weight: var(--font-weight-bold);
     font-size: var(--font-size-sm);
+}
+
+/* Return Form */
+
+.return-top-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--gap-md);
+    margin-bottom: var(--margin-lg);
+}
+
+.return-top-buttons button {
+    padding: var(--padding-md);
+    border: var(--border-width-medium) solid var(--gray-700);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--orange-500);
+    color: var(--white);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: background var(--transition-normal);
+}
+
+.return-top-buttons button:hover {
+    background-color: var(--orange-400);
+}
+
+.return-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    align-items: center;
+}
+
+.return-card {
+    width: var(--width-content);
+    border: var(--border-width-thin) solid var(--gray-300);
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-md);
+    background-color: var(--gray-200);
+    display: flex;
+    gap: var(--gap-md);
+    align-items: center;
+    flex-direction: row;
+    transition: background var(--transition-normal);
+}
+
+.return-checkboxes {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+.return-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    cursor: pointer;
+    padding: var(--padding-md);
+    border: var(--border-width-medium) solid var(--gray-700);
+    border-radius: var(--border-radius-sm);
+    font-weight: var(--font-weight-bold);
+    background-color: var(--gray-800);
+    color: var(--success-green);
+}
+
+.return-card.processed {
+    background-color: var(--gray-500);
 }
