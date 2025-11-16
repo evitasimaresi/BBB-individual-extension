@@ -6,7 +6,7 @@
     padding: var(--padding-md);
     margin: var(--margin-none);
     margin-left: var(--margin-lg);
-    /* flex: 1 40%; */
+    flex: 1 10%;
 }
 
 .filters-form {

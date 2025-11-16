@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<BBB.Models.TagGroup>
+@{
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -43,121 +44,25 @@
         <section id="indexmain">
             <section class="filters-container">
                 <form class="filters-form">
+                @foreach (var group in Model)
+                {
                     <div class="filter-group">
-                        <button type="button" class="filter-toggle" data-filter="categories">
-                            <span>categories</span>
+                        <button type="button" class="filter-toggle" data-filter="@group.Name.ToLower().Replace(" ", "")">
+                            <span>@group.Name</span>
                             <span class="filter-icon">+</span>
                         </button>
-                        <div class="filter-content" id="categories">
-                            <label class="filter-option">
-                                <input type="checkbox" name="category" value="strategy">
-                                <span class="checkmark"></span>
-                                Strategy
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="category" value="family">
-                                <span class="checkmark"></span>
-                                Family
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="category" value="party">
-                                <span class="checkmark"></span>
-                                Party
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="category" value="card">
-                                <span class="checkmark"></span>
-                                Card Game
-                            </label>
+                        <div class="filter-content" id="@group.Name.ToLower().Replace(" ", "")">
+                            @foreach (var tag in group.Tags.OrderBy(t => t.Name))
+                            {
+                                    <label class="filter-option">
+                                        <input type="checkbox" name="@group.Name.ToLower().Replace(" ", "")" value="@tag.Id" data-group="@group.Id">
+                                        <span class="checkmark"></span>
+                                        @tag.Name
+                                    </label>
+                            }
                         </div>
                     </div>
-
-                    <div class="filter-group">
-                        <button type="button" class="filter-toggle" data-filter="age">
-                            <span>age</span>
-                            <span class="filter-icon">+</span>
-                        </button>
-                        <div class="filter-content" id="age">
-                            <label class="filter-option">
-                                <input type="checkbox" name="age" value="6+">
-                                <span class="checkmark"></span>
-                                6+ years
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="age" value="8+">
-                                <span class="checkmark"></span>
-                                8+ years
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="age" value="12+">
-                                <span class="checkmark"></span>
-                                12+ years
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="age" value="18+">
-                                <span class="checkmark"></span>
-                                18+ years
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="filter-group">
-                        <button type="button" class="filter-toggle" data-filter="timeplay">
-                            <span>time play</span>
-                            <span class="filter-icon">+</span>
-                        </button>
-                        <div class="filter-content" id="timeplay">
-                            <label class="filter-option">
-                                <input type="checkbox" name="timeplay" value="15-30">
-                                <span class="checkmark"></span>
-                                15-30 min
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="timeplay" value="30-60">
-                                <span class="checkmark"></span>
-                                30-60 min
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="timeplay" value="60-120">
-                                <span class="checkmark"></span>
-                                60-120 min
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="timeplay" value="120+">
-                                <span class="checkmark"></span>
-                                120+ min
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="filter-group">
-                        <button type="button" class="filter-toggle" data-filter="players">
-                            <span>number of players</span>
-                            <span class="filter-icon">+</span>
-                        </button>
-                        <div class="filter-content" id="players">
-                            <label class="filter-option">
-                                <input type="checkbox" name="players" value="1-2">
-                                <span class="checkmark"></span>
-                                1-2 players
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="players" value="3-4">
-                                <span class="checkmark"></span>
-                                3-4 players
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="players" value="5-6">
-                                <span class="checkmark"></span>
-                                5-6 players
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="players" value="7+">
-                                <span class="checkmark"></span>
-                                7+ players
-                            </label>
-                        </div>
-                    </div>
+                }
                 </form>
             </section>
 
@@ -201,7 +106,7 @@
         </form>
     </dialog>
     
-    <script>const allowEdit = @(Model ? "true" : "false");</script>
+    <script>const allowEdit = @(ViewBag.IsAdmin ? "true" : "false");</script>
     <script src="~/js/renderBoardGames.js"></script>
 
 </body>

@@ -28,13 +28,34 @@ public class AdminController : Controller
         if (user == null || user.Name != "admin")
             return RedirectToAction("Index", "Home");
 
-        return View();
-    }
+        var tagGroups = _db.TagGroups
+            .Include(tg => tg.Tags)
+            .OrderBy(tg => tg.Name)
+            .ToList();
+
+        return View(tagGroups);
+}
     
     [HttpPost]
-    public async Task<ActionResult> AddGame(string gameTitle, string gameDesc, IFormFile gameCover)
+    public async Task<ActionResult> AddGame(string gameTitle, string gameDesc, IFormFile gameCover, string gameCond, string gameLink, [FromForm] IFormCollection form)
     {
         string relativePath = "";
+
+            var tagIds = new List<int>();
+    
+        foreach (var key in form.Keys)
+        {
+            if (key.StartsWith("tag_"))
+            {
+                var value = form[key].ToString();
+                if (int.TryParse(value, out int tagId))
+                {
+                    tagIds.Add(tagId);
+                }
+            }
+        }
+
+        Console.WriteLine($"Parsed tag IDs: {string.Join(", ", tagIds)}");
 
         if (gameCover != null && gameCover.Length > 0)
         {
@@ -54,9 +75,31 @@ public class AdminController : Controller
         
         if (!string.IsNullOrWhiteSpace(gameTitle))
         {
-            var game = new BoardGame { Title = gameTitle, Description = gameDesc, Image = relativePath, StatusId = 1 };
+            var game = new BoardGame 
+            { 
+                Title = gameTitle, 
+                Description = gameDesc, 
+                Image = relativePath,
+                Condition = gameLink,
+                Link = gameCond,
+                StatusId = 1 
+            };
             _db.BoardGames.Add(game);
             _db.SaveChanges();
+
+            if (tagIds.Any())
+            {
+                foreach (var tagId in tagIds)
+                {
+                    _db.Attach(new Tag { Id = tagId });
+                    _db.BoardGameTags.Add(new BoardGameTag
+                    {
+                        BoardGameId = game.Id,
+                        TagId = tagId
+                    });
+                }
+                _db.SaveChanges();
+            }
         }
 
         return RedirectToAction("Index", "Home");

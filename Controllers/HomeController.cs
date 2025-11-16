@@ -28,41 +28,34 @@ public class HomeController : Controller
         var userId = HttpContext.Session.GetString("UserId");
         int userID;
 
-        var users = _db.Users.ToList();
-        foreach (var xd in users)
+        bool isAdmin = false;
+        if (int.TryParse(userId, out userID))
         {
-            // var auth = _db.Auths.FirstOrDefault(a => a.UserId == xd.Id);
-            // if (auth == null) continue;
-
-            // // Generate random 16-byte salt
-            // byte[] salt = RandomNumberGenerator.GetBytes(16);
-            // string saltBase64 = Convert.ToBase64String(salt);
-
-            // // Hash the existing plain password using static PBKDF2Hasher
-            // byte[] hash = Services.PBKDF2Hasher.Hash(auth.PasswordHash, salt);
-            // string hashBase64 = Convert.ToBase64String(hash);
-
-            // // Store back in DB
-            // auth.Token = saltBase64;           // salt
-            // auth.PasswordHash = hashBase64;    // hashed password
-            // _db.Entry(auth).State = EntityState.Modified;
-
-            Debug.WriteLine(_db.Auths.FirstOrDefault(a => a.UserId == xd.Id).PasswordHash);
+            var user = _db.Users.Include(u => u.Role).FirstOrDefault(u => u.Id == userID);
+            isAdmin = user?.Role?.Name == "admin";
         }
+        ViewBag.IsAdmin = isAdmin;
 
-        // // Save changes
-        // _db.SaveChanges();
+        var tagGroups = _db.TagGroups
+            .Include(tg => tg.Tags)
+            .OrderBy(tg => tg.Name)
+            .ToList();
+
+        return View(tagGroups);
+
+        // var users = _db.Users.ToList();
+        // foreach (var xd in users)
+        // {
+        //     Debug.WriteLine(_db.Auths.FirstOrDefault(a => a.UserId == xd.Id).PasswordHash);
+        // }
 
 
+        // if (!int.TryParse(userId, out userID)) return View(false);
 
-
-
-        if (!int.TryParse(userId, out userID)) return View(false);
-
-        var user = _db.Users.FirstOrDefault(u => u.Id == userID);
-        if (user == null) return View(false);
-        if (user.Role.Name == "admin") return View(true);
-        return View(false);
+        // var user = _db.Users.FirstOrDefault(u => u.Id == userID);
+        // if (user == null) return View(false);
+        // if (user.Role.Name == "admin") return View(true);
+        // return View(false);
 
     }
 
@@ -196,7 +189,14 @@ public class HomeController : Controller
                 g.Id,
                 g.Title,
                 g.Description,
-                g.Image
+                g.Image,
+                Tags = g.BoardGameTags.Select(bt => new
+                {
+                    Id = bt.Tag.Id,
+                    Name = bt.Tag.Name,
+                    TagGroupId = bt.Tag.TagGroupId,
+                    TagGroupName = bt.Tag.TagGroup.Name,
+                })
             }).ToList();
 
         return Json(games);
@@ -250,6 +250,5 @@ public class HomeController : Controller
 
         return Ok(new { message = $"Game borrowed by {username}" });
     }
-
 
 }

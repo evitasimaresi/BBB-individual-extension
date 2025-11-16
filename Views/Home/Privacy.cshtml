@@ -1,6 +1,185 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Privacy & Security";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>@ViewData["Title"]</h1>
+  <main id="privacy-main">
+    <header>
+        <h1>@ViewData["Title"]</h1>
+        <p>Last updated: 15 November 2025</p>
+    </header>
 
-<p>Use this page to detail your site's privacy policy.</p>
+    <section id="introduction">
+      <h2>Introduction</h2>
+      <p>
+        We value your trust. Protecting your personal information and ensuring secure access to our services is a priority.
+        This policy explains how we collect, use, and safeguard your data when you interact with our website, catalog, and reservation system.
+      </p>
+    </section>
+
+    <section id="data-controller">
+      <h2>Data controller</h2>
+      <p>
+        The Board Game Library (the “Library”) is the data controller responsible for processing your personal data on this website.
+        If the Library operates within an institution, the institution may also act as a joint controller for certain processes.
+      </p>
+    </section>
+
+    <section id="information-we-collect">
+      <h2>Information we collect</h2>
+      <ul>
+        <li>
+          <strong>Account details:</strong>
+          Name, email address, and password (stored as a secure hash).
+        </li>
+        <li>
+          <strong>Reservation data:</strong>
+          Titles you borrow, reservation dates, pickup/return status, and overdue flags.
+        </li>
+        <li>
+          <strong>Communication records:</strong>
+          Messages, feedback, and support requests sent via forms or email.
+        </li>
+        <li>
+          <strong>Technical data:</strong>
+          IP address, browser type, device information, and anonymized usage statistics (e.g., pages visited, session duration).
+        </li>
+        <li>
+          <strong>Cookies and similar technologies:</strong>
+          Essential cookies for authentication and session management; optional analytics cookies if you consent.
+        </li>
+      </ul>
+    </section>
+
+    <section id="legal-bases">
+      <h2>Legal bases for processing (GDPR)</h2>
+      <ul>
+        <li>
+          <strong>Contract:</strong>
+          To provide account functionality and manage reservations you request.
+        </li>
+        <li>
+          <strong>Consent:</strong>
+          For optional communications (e.g., newsletters) and non-essential cookies/analytics.
+        </li>
+        <li>
+          <strong>Legitimate interests:</strong>
+          To improve the website, ensure service integrity, and prevent misuse.
+        </li>
+        <li>
+          <strong>Legal obligation:</strong>
+          To comply with applicable laws and institutional policies.
+        </li>
+      </ul>
+    </section>
+
+    <section id="how-we-use">
+      <h2>How we use your information</h2>
+      <ul>
+        <li><strong>Account management:</strong> Create and maintain your user account and authentication.</li>
+        <li><strong>Reservations and notifications:</strong> Process reservations, manage pickups/returns, and send status updates.</li>
+        <li><strong>Service improvements:</strong> Analyze anonymized usage to enhance catalog, search, and site performance.</li>
+        <li><strong>Security and integrity:</strong> Monitor for fraud or abuse and protect our systems.</li>
+        <li><strong>Compliance:</strong> Enforce library rules and meet legal requirements.</li>
+      </ul>
+      <p>
+        We do not sell your personal data to third parties and do not share it for marketing purposes.
+      </p>
+    </section>
+
+    <section id="data-sharing">
+      <h2>Data sharing</h2>
+      <ul>
+        <li>
+          <strong>Service providers:</strong>
+          Trusted vendors (e.g., hosting, email delivery) may process data on our behalf under data processing agreements.
+        </li>
+        <li>
+          <strong>Institutional partners:</strong>
+          Where applicable, limited sharing with institutional IT or administration to support operations and compliance.
+        </li>
+        <li>
+          <strong>Legal requirements:</strong>
+          Disclosure if required by law, regulation, or a valid legal process.
+        </li>
+      </ul>
+    </section>
+
+    <section id="security-measures">
+      <h2>Security measures</h2>
+      <ul>
+        <li><strong>Encryption in transit:</strong> HTTPS/TLS for all website communications.</li>
+        <li><strong>Secure password storage:</strong> Industry-standard hashing and salting; never store plain-text passwords.</li>
+        <li><strong>Access controls:</strong> Role-based access; only authorized staff can view reservation records.</li>
+        <li><strong>System hardening:</strong> Regular updates, patching, and monitoring to prevent unauthorized access.</li>
+        <li><strong>Backups and continuity:</strong> Periodic backups and recovery procedures to protect against data loss.</li>
+      </ul>
+    </section>
+
+    <section id="retention">
+      <h2>Data retention</h2>
+      <ul>
+        <li><strong>Account data:</strong> Kept while your account is active; removed or anonymized upon request or inactivity after a defined period.</li>
+        <li><strong>Reservation records:</strong> Retained for operational and audit purposes for a limited time, then anonymized.</li>
+        <li><strong>Communications:</strong> Retained as long as necessary to address your request and for compliance.</li>
+        <li><strong>Analytics data:</strong> Stored in aggregate or anonymized form when feasible.</li>
+      </ul>
+    </section>
+
+    <section id="your-rights">
+      <h2>Your rights (EU/EEA)</h2>
+      <ul>
+        <li><strong>Access:</strong> Request a copy of your personal data we hold.</li>
+        <li><strong>Rectification:</strong> Ask us to correct inaccurate or incomplete data.</li>
+        <li><strong>Erasure:</strong> Request deletion of your data, subject to legal obligations.</li>
+        <li><strong>Restriction:</strong> Ask us to limit processing under certain conditions.</li>
+        <li><strong>Portability:</strong> Receive your data in a structured, commonly used format.</li>
+        <li><strong>Objection:</strong> Object to processing based on legitimate interests or direct marketing.</li>
+        <li><strong>Withdraw consent:</strong> Withdraw consent for optional processing at any time.</li>
+        <li><strong>Complaint:</strong> Lodge a complaint with your local data protection authority.</li>
+      </ul>
+    </section>
+
+    <section id="cookies">
+      <h2>Cookies and analytics</h2>
+      <ul>
+        <li><strong>Essential cookies:</strong> Required for login, session state, and security.</li>
+        <li><strong>Preference cookies:</strong> Optional settings (e.g., language), stored with your consent.</li>
+        <li><strong>Analytics:</strong> If enabled, we use privacy-conscious analytics to understand usage; you can opt out or not consent.</li>
+      </ul>
+    </section>
+
+    <section id="children">
+      <h2>Children’s privacy</h2>
+      <p>
+        Our services are intended for general audiences. If you are under the age required by applicable law to consent,
+        please use the service with a parent or guardian, or provide consent documentation where required.
+      </p>
+    </section>
+
+    <section id="international-transfers">
+      <h2>International data transfers</h2>
+      <p>
+        If data is transferred outside the EU/EEA, we use appropriate safeguards (e.g., standard contractual clauses) to protect your information.
+      </p>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <p>
+        For privacy or security questions, or to exercise your rights, contact:
+      </p>
+      <address>
+        <strong>Board Game Library — Privacy</strong><br />
+        Email: privacy@boardgamelibrary.example<br />
+        Location: Sønderborg, Region of Southern Denmark, Denmark
+      </address>
+    </section>
+
+    <section id="updates">
+      <h2>Policy updates</h2>
+      <p>
+        We may update this policy to reflect changes in our practices or legal requirements. Updates will be posted here with a revised date.
+        Significant changes may be communicated via email or on-site notices.
+      </p>
+    </section>
+  </main>
