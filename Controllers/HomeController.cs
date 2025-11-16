@@ -1,5 +1,6 @@
 using BBB.Data;
 using BBB.Models;
+using BBB.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
@@ -62,18 +63,11 @@ public class HomeController : Controller
     public IActionResult Account()
     {
         var userIdStr = HttpContext.Session.GetString("UserId");
-        if (!int.TryParse(userIdStr, out var userId))
-        {
-            Console.WriteLine("No user session found. Redirecting to Login.");
-            return RedirectToAction("Login", "Account");
-        }
+        int userId = int.Parse(userIdStr);
 
         var user = _db.Users.FirstOrDefault(u => u.Id == userId);
         if (user == null)
-        {
-            Console.WriteLine($"User not found for ID: {userId}");
             return RedirectToAction("Login", "Account");
-        }
 
         var borrowedCount = _db.BoardGameUsers
             .Count(x => x.UserId == userId && x.ReturnDate == null);
@@ -85,7 +79,6 @@ public class HomeController : Controller
             BorrowedCount = borrowedCount
         };
 
-        Console.WriteLine($"Loaded account info for user: {user.Username}");
         return View(vm);
     }
     // POST: /Home/Account
@@ -94,61 +87,51 @@ public class HomeController : Controller
     public IActionResult Account(EditAccountModel model)
     {
         var userIdStr = HttpContext.Session.GetString("UserId");
-        if (!int.TryParse(userIdStr, out var userId))
-        {
-            Console.WriteLine("Invalid user session. Redirecting to Login.");
-            return RedirectToAction("Login", "Account");
-        }
+        int userId = int.Parse(userIdStr);
 
         var user = _db.Users.Include(u => u.Auth).FirstOrDefault(u => u.Id == userId);
         if (user == null)
-        {
-            Console.WriteLine($"User with ID {userId} not found.");
             return RedirectToAction("Login", "Account");
-        }
 
-        // Update username & email
-        user.Username = model.Username?.Trim() ?? user.Username;
-        user.Email = model.Email?.Trim() ?? user.Email;
+        // update username + email
+        user.Username = model.Username.Trim();
+        user.Email = model.Email.Trim();
 
-        Console.WriteLine($"Attempting to update user: {user.Username}");
-
-        // Password change (if filled)
-        if (!string.IsNullOrWhiteSpace(model.NewPassword) || !string.IsNullOrWhiteSpace(model.ConfirmPassword))
+        // password update
+        if (!string.IsNullOrWhiteSpace(model.NewPassword) ||
+            !string.IsNullOrWhiteSpace(model.ConfirmPassword))
         {
-            if (string.IsNullOrWhiteSpace(model.NewPassword) || string.IsNullOrWhiteSpace(model.ConfirmPassword))
+            if (string.IsNullOrWhiteSpace(model.NewPassword) ||
+                string.IsNullOrWhiteSpace(model.ConfirmPassword))
             {
                 model.Error = "Password fields cannot be empty.";
-                Console.WriteLine("Password fields were empty.");
             }
             else if (model.NewPassword != model.ConfirmPassword)
             {
                 model.Error = "Passwords do not match.";
-                Console.WriteLine("Password mismatch detected.");
             }
             else
             {
-                var auth = _db.Auths.FirstOrDefault(a => a.UserId == user.Id);
-                if (auth != null)
-                {
-                    auth.PasswordHash = model.NewPassword;
-                    Console.WriteLine("Password successfully updated.");
-                }
+                // password hashing
+                byte[] salt = RandomNumberGenerator.GetBytes(16);
+                string saltBase64 = Convert.ToBase64String(salt);
+
+                byte[] hash = PBKDF2Hasher.Hash(model.NewPassword, salt);
+                string hashBase64 = Convert.ToBase64String(hash);
+
+                user.Auth.PasswordHash = hashBase64;
+                user.Auth.Token = saltBase64;
             }
         }
 
         if (model.Error == null)
         {
             _db.SaveChanges();
-            Console.WriteLine($"User info updated successfully for {user.Username}.");
-
-            HttpContext.Session.SetString("Username", user.Username);
             model.Message = "Your information has been updated successfully.";
+            HttpContext.Session.SetString("Username", user.Username);
         }
 
-        model.BorrowedCount = _db.BoardGameUsers.Count(x => x.UserId == userId && x.ReturnDate == null);
-
-        return View(model);
+        return View("Account", model);
     }
 
 
@@ -199,7 +182,7 @@ public class HomeController : Controller
                 }),
                 g.StatusId
             }).ToList();
-        
+
         return Json(games);
     }
 
@@ -229,14 +212,14 @@ public class HomeController : Controller
         if (!int.TryParse(userId, out userID))
             return StatusCode(418, "I'm a teapot");
 
-        if (_db.BoardGameUsers.FirstOrDefault( bgu => 
+        if (_db.BoardGameUsers.FirstOrDefault(bgu =>
             bgu.UserId == userID &&
             bgu.BoardGameId == request &&
             (bgu.ReturnDate == null || DateTime.Now < bgu.ReturnDate)) != null)
             return StatusCode(420, "Game already borrowed");
-        if (_db.BoardGameUsers.Count(bgu => 
+        if (_db.BoardGameUsers.Count(bgu =>
             bgu.UserId == userID &&
-            (bgu.ReturnDate == null || DateTime.Now < bgu.ReturnDate)) > 3) 
+            (bgu.ReturnDate == null || DateTime.Now < bgu.ReturnDate)) > 3)
             return StatusCode(419, "Too many games");
 
         game.StatusId = 3;

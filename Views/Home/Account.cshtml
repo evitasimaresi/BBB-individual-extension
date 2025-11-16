@@ -24,10 +24,6 @@
     </section>
 
     @* Show messages *@
-    @if (!string.IsNullOrEmpty(Model.Error))
-    {
-        <div class="alert-danger">@Model.Error</div>
-    }
     @if (!string.IsNullOrEmpty(Model.Message))
     {
         <div class="alert-success">@Model.Message</div>
@@ -38,7 +34,11 @@
         <header>
             <h3>Edit Account Information</h3>
         </header>
-
+        @* Show messages *@
+        @if (!string.IsNullOrEmpty(Model.Error))
+        {
+            <div class="alert-danger">@Model.Error</div>
+        }
         <form asp-controller="Home" asp-action="Account" method="post">
             @Html.AntiForgeryToken()
             <fieldset style="border: none; padding: 0;">
@@ -117,6 +117,15 @@
             target.type = target.type === "password" ? "text" : "password";
         });
     });
+    @if (!string.IsNullOrEmpty(Model.Error))
+        {
+            <text>
+                document.addEventListener("DOMContentLoaded", function() 
+                {
+                    toggleForm(true);
+                });
+            </text>
+    }
 </script>
 
 <style>
