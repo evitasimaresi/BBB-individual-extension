@@ -85,26 +85,41 @@ function renderGames(games) {
 
 // Get Active Filters
 function getActiveFilters() {
-    const filterMap = new Map();
+    const tagFilters = new Map();
+    const statusFilters = new Set();
 
-    document.querySelectorAll('.filters-form input[type="checkbox"]:checked').forEach(cb => {
+    // Get tag filters (those with data-group attribute)
+    document.querySelectorAll('.filters-form input[type="checkbox"]:checked[data-group]').forEach(cb => {
         const tagId = Number(cb.value);
         const groupId = Number(cb.dataset.group);
 
-        if (!filterMap.has(groupId)) {
-            filterMap.set(groupId, new Set());
+        if (!tagFilters.has(groupId)) {
+            tagFilters.set(groupId, new Set());
         }
-        filterMap.get(groupId).add(tagId);
+        tagFilters.get(groupId).add(tagId);
     });
 
-    return filterMap;
+    // Get status filters (those with data-status attribute)
+    document.querySelectorAll('.filters-form input[type="checkbox"]:checked[data-status]').forEach(cb => {
+        statusFilters.add(Number(cb.value));
+    });
+
+    return { tagFilters, statusFilters };
 }
 
 // Game Matches Filters
 function gameMatchesFilters(game, filters) {
-    if (filters.size === 0) return true;
+    const { tagFilters, statusFilters } = filters;
 
-    for (const [groupId, selectedTagIds] of filters.entries()) {
+    // Check status filter first
+    if (statusFilters.size > 0 && !statusFilters.has(game.statusId)) {
+        return false;
+    }
+
+    // Check tag filters (AND between groups, OR within group)
+    if (tagFilters.size === 0) return true;
+
+    for (const [groupId, selectedTagIds] of tagFilters.entries()) {
         const hasMatchInGroup = (game.tags || []).some(t =>
             t.tagGroupId === groupId && selectedTagIds.has(t.id)
         );

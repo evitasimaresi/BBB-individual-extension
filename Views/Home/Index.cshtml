@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var statuses = ViewBag.Statuses as List<BBB.Models.Status>;
 }
 
 <!DOCTYPE html>
@@ -18,7 +19,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
     <!-- Custom css -->
-    
+
     <title>BBB</title>
     <link rel="icon" type="image/x-icon" href="~/Images/logo.png">
 </head>
@@ -44,31 +45,53 @@
         <section id="indexmain">
             <section class="filters-container">
                 <form class="filters-form">
-                @foreach (var group in Model)
-                {
+                    <!-- Status Filter -->
                     <div class="filter-group">
-                        <button type="button" class="filter-toggle" data-filter="@group.Name.ToLower().Replace(" ", "")">
-                            <span>@group.Name</span>
+                        <button type="button" class="filter-toggle" data-filter="status">
+                            <span>Status</span>
                             <span class="filter-icon">+</span>
                         </button>
-                        <div class="filter-content" id="@group.Name.ToLower().Replace(" ", "")">
-                            @foreach (var tag in group.Tags.OrderBy(t => t.Name))
+                        <div class="filter-content" id="status">
+                            @if (statuses != null)
                             {
+                                @foreach (var status in statuses)
+                                {
                                     <label class="filter-option">
-                                        <input type="checkbox" name="@group.Name.ToLower().Replace(" ", "")" value="@tag.Id" data-group="@group.Id">
+                                        <input type="checkbox" name="status" value="@status.Id" data-status="@status.Id">
                                         <span class="checkmark"></span>
-                                        @tag.Name
+                                        @status.Name
                                     </label>
+                                }
                             }
                         </div>
                     </div>
-                }
+                    @foreach (var group in Model)
+                    {
+                        <div class="filter-group">
+                            <button type="button" class="filter-toggle"
+                                data-filter="@group.Name.ToLower().Replace(" ", "")">
+                                <span>@group.Name</span>
+                                <span class="filter-icon">+</span>
+                            </button>
+                            <div class="filter-content" id="@group.Name.ToLower().Replace(" ", "")">
+                                @foreach (var tag in group.Tags.OrderBy(t => t.Name))
+                                {
+                                    <label class="filter-option">
+                                        <input type="checkbox" name="@group.Name.ToLower().Replace(" ", "")" value="@tag.Id"
+                                            data-group="@group.Id">
+                                        <span class="checkmark"></span>
+                                        @tag.Name
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                    }
                 </form>
             </section>
 
             <nav class="scroll-container">
                 <ul class="scrolloverflow">
-                    
+
                 </ul>
             </nav>
         </section>
@@ -79,8 +102,9 @@
 
     <dialog id="editGame">
 
-            <!-- Editing Form -->
-        <form class="game-edit-form" method="post" action="@Url.Action("EditGame", "Admin")" enctype="multipart/form-data">
+        <!-- Editing Form -->
+        <form class="game-edit-form" method="post" action="@Url.Action("EditGame", "Admin")"
+            enctype="multipart/form-data">
             <!--why do I need hidden gam ID?-->
             <input type="hidden" id="gameId" name="Id" />
 
@@ -102,10 +126,10 @@
             <button id="button-delete" type="button">Delete</button>
             <button id="button-cancel" type="button">Cancel</button>
             <button id="button-save" type="submit">Save</button>
-            
+
         </form>
     </dialog>
-    
+
     <script>const allowEdit = @(ViewBag.IsAdmin ? "true" : "false");</script>
     <script src="~/js/renderBoardGames.js"></script>
 

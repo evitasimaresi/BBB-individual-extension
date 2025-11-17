@@ -42,6 +42,12 @@ public class HomeController : Controller
             .OrderBy(tg => tg.Name)
             .ToList();
 
+        var statuses = _db.Statuses
+            .OrderBy(s => s.Id)
+            .ToList();
+
+        ViewBag.Statuses = statuses;
+
         return View(tagGroups);
 
         // var users = _db.Users.ToList();
@@ -58,6 +64,20 @@ public class HomeController : Controller
         // if (user.Role.Name == "admin") return View(true);
         // return View(false);
 
+    }
+
+    [HttpGet]
+    public IActionResult GetStatuses()
+    {
+        var statuses = _db.Statuses
+            .Select(s => new
+            {
+                s.Id,
+                s.Name
+            })
+            .ToList();
+
+        return Json(statuses);
     }
 
     public IActionResult Account()
