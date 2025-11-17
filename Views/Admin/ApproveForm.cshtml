@@ -11,10 +11,10 @@
     @foreach (var bgu in Model)
     {
         var hasConflict = Model.Any(x => x.BoardGame.Id == bgu.BoardGame.Id && x.Id != bgu.Id);
-        <div class="approve-card @(hasConflict ? "linked-card" : "")" data-id="@bgu.Id" data-boardgameid="@bgu.BoardGame.Id">
+        <div class="approve-card @(hasConflict ? "approve-linked-card" : "")" data-id="@bgu.Id" data-boardgameid="@bgu.BoardGame.Id">
             @if (hasConflict)
             {
-                <span class="linked-marker">[Linked Request #@bgu.BoardGame.Id]</span>
+                <span class="approve-linked-marker">[Linked Request #@bgu.BoardGame.Id]</span>
             }
             <h3>Request ID: @bgu.Id</h3>
             <h3>Board Game:</h3>

@@ -187,7 +187,6 @@ footer {
 }
 
 /* GAME CARDS */
-
 .card {
   display: flex;
   align-items: stretch;
@@ -245,6 +244,10 @@ footer {
   flex-wrap: wrap;
   margin-top: auto;
   flex-shrink: 0;
+}
+
+.card-hidden {
+    display: none;
 }
 
 /* SIDEBAR */
@@ -451,8 +454,6 @@ footer {
   }
 }
 
-
-
 .filter-option input[type="radio"] {
   position: absolute;
   opacity: 0;
@@ -546,18 +547,17 @@ footer {
   background-color: var(--gray-500);
 }
 
-.linked-card {
+.approve-linked-card {
   border: var(--border-width-thick) solid var(--orange-500) !important;
 }
 
-.linked-marker {
+.approve-linked-marker {
   color: var(--orange-500);
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-sm);
 }
 
 /* Return Form */
-
 .return-top-buttons {
   display: flex;
   justify-content: center;
