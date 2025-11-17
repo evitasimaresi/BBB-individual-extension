@@ -264,7 +264,18 @@ footer {
   padding: var(--padding-xs) var(--gap-xl);
   font-weight: var(--font-weight-bold);
   color: var(--white);
-  background: var(--blue-300);
+  background: var(--blue-400);
+}
+
+.button-container .button-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.button-container .button-group .button {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
 }
 
 .card-hidden {
