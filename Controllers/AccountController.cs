@@ -53,7 +53,8 @@ public class AccountController : Controller
 
         // update username + email
         user.Username = model.Username.Trim();
-        
+        string? error = null;
+        string? message = null;
         // password update
         if (!string.IsNullOrWhiteSpace(model.NewPassword) ||
             !string.IsNullOrWhiteSpace(model.ConfirmPassword))
@@ -61,11 +62,11 @@ public class AccountController : Controller
             if (string.IsNullOrWhiteSpace(model.NewPassword) ||
                 string.IsNullOrWhiteSpace(model.ConfirmPassword))
             {
-                model.Error = "Password fields cannot be empty.";
+                error = "Password fields cannot be empty.";
             }
             else if (model.NewPassword != model.ConfirmPassword)
             {
-                model.Error = "Passwords do not match.";
+                error = "Passwords do not match.";
             }
             else
             {
@@ -81,13 +82,16 @@ public class AccountController : Controller
             }
         }
 
-        if (model.Error == null)
+        if (error == null)
         {
             _db.SaveChanges();
-            model.Message = "Your information has been updated successfully.";
+            message = "Your information has been updated successfully.";
             HttpContext.Session.SetString("Username", user.Username);
         }
         var vm = GetEditAccountModel(userId);
+        if(vm == null) return View("Account", vm);
+        vm.Error = error;
+        vm.Message = message;
         return View("Account", vm);
     }
 
