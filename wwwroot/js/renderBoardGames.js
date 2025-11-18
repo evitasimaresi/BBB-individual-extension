@@ -52,7 +52,7 @@ function renderGames(games) {
                 statusColor = 'var(--blue-300)';
                 break;
             case 3:
-                borrowText = 'Waiting list';
+                borrowText = 'Requested';
                 borrowDisabled = false;
                 statusColor = 'var(--warning)';
                 break;
