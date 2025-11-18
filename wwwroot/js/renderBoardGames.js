@@ -1,6 +1,6 @@
 // Variables
 let gamesData = [];
-let filterMap = {};
+let filterMap = { tagFilters: [], statusFilters: [], queryFilters: [], queryActive: false };
 
 // Fetch A list of games from the server, render them and attach event listeners
 fetch('/Home/GetGames')
@@ -103,22 +103,29 @@ function getActiveFilters() {
         statusFilters.add(Number(cb.value));
     });
 
-    return { tagFilters, statusFilters };
+    // Persist values in filterMap
+    const queryFilters = filterMap.queryFilters;
+    const queryActive = filterMap.queryActive;
+
+    return { tagFilters, statusFilters, queryFilters, queryActive };
 }
 
 // Game Matches Filters
 function gameMatchesFilters(game, filters) {
-    const { tagFilters, statusFilters } = filters;
+    // Check query filter
+    if (filters.queryActive && !filters.queryFilters.includes(game.id)) {
+        return false;
+    }
 
-    // Check status filter first
-    if (statusFilters.size > 0 && !statusFilters.has(game.statusId)) {
+    // Check status filter
+    if (filters.statusFilters.size > 0 && !filters.statusFilters.has(game.statusId)) {
         return false;
     }
 
     // Check tag filters (AND between groups, OR within group)
-    if (tagFilters.size === 0) return true;
+    if (filters.tagFilters.size === 0) return true;
 
-    for (const [groupId, selectedTagIds] of tagFilters.entries()) {
+    for (const [groupId, selectedTagIds] of filters.tagFilters.entries()) {
         const hasMatchInGroup = (game.tags || []).some(t =>
             t.tagGroupId === groupId && selectedTagIds.has(t.id)
         );
@@ -248,5 +255,53 @@ function attachModalListeners() {
 
     document.getElementById('button-cancel').addEventListener('click', function () {
         document.getElementById('editGame').close();
+    });
+}
+
+// Attach Search Bar listener
+const searchButton = document.getElementById('game-search-form');
+if (searchButton) {
+    searchButton.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const query = (this.querySelector('input[name="query"]')?.value || '').trim();
+
+        if (!query) {
+            filterMap.queryActive = false;
+            filterMap.queryFilters = [];
+            filterMap = getActiveFilters();
+            applyFilters(filterMap);
+            return;
+        }
+
+        fetch(`/Home/SearchGames?query=${encodeURIComponent(query)}`, { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                filterMap.queryActive = true;
+                filterMap.queryFilters = data;
+                filterMap = getActiveFilters();
+                applyFilters(filterMap);
+            })
+            .catch(error => console.error('Error searching games:', error));
+    });
+}
+
+// Attach Search Clear Button listener
+const searchInput = document.querySelector('#game-search-form input[name="query"]');
+const searchClearButton = document.getElementById('search-clear');
+if (searchClearButton && searchInput) {
+    // show/hide clear button as user types
+    searchInput.addEventListener('input', function () {
+        searchClearButton.style.display = (this.value || '') ? 'inline' : 'none';
+    });
+
+    // clear input, disable query filter and reapply filters
+    searchClearButton.addEventListener('click', function () {
+        searchInput.value = '';
+        searchClearButton.style.display = 'none';
+        filterMap.queryActive = false;
+        filterMap.queryFilters = [];
+        filterMap = getActiveFilters();
+        applyFilters(filterMap);
+        searchInput.focus();
     });
 }
