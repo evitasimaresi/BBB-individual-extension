@@ -47,9 +47,10 @@
                 <input id="Username" name="Username" type="text" value="@Model.Username" required />
 
                 <label for="Email">Email</label>
-                <input id="Email" name="Email" type="email" value="@Model.Email" required />
+                <input id="Email" name="Email" type="email" value="@Model.Email" disabled
+                    style="background:var(--blue-300);" />
 
-                <label for="NewPassword">New Password</label>
+                <label for=" NewPassword">New Password</label>
                 <div class="password-wrapper">
                     <input id="NewPassword" name="NewPassword" type="password"
                         placeholder="Leave blank to keep current" />
@@ -132,7 +133,7 @@
         color: #ffb3b3;
         padding: 10px 14px;
         border-radius: 8px;
-        margin-bottom: 12px;       
+        margin-bottom: 12px;
     }
 
     .alert-success {

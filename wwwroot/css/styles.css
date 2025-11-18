@@ -240,22 +240,54 @@ footer {
 .card .content .button-container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 15px;
   flex-wrap: wrap;
   margin-top: auto;
   flex-shrink: 0;
 }
 
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  align-items: flex-start;
+  margin-right: auto;
+}
+
+.button-container .boxes {
+  flex-shrink: 0;
+  text-align: left;
+  align-self: flex-start;
+  border: none;
+  border-radius: var(--border-radius-2x1);
+  padding: var(--padding-xs) var(--gap-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--white);
+  background: var(--blue-400);
+}
+
+.button-container .button-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.button-container .button-group .button {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+}
+
 .card-hidden {
-    display: none !important;
+  display: none !important;
 }
 
 .no-games-card {
-    padding: 20px;
-    color: var(--blue-custom-light);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  padding: 20px;
+  color: var(--blue-custom-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* SIDEBAR */

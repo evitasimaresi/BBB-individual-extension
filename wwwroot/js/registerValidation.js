@@ -12,7 +12,7 @@
         const email = emailInput.value.trim();
         const password = passwordInput.value;
 
-        let message = ''; // define message up front
+        let message = '';
 
         const isUsernameValid = username.length >= 4;
         const isPasswordValid = password.length >= 8 && /\d/.test(password);
@@ -26,7 +26,7 @@
             if (!isEmailValid) message += '- Email must be a valid @student.sdu.dk address\n';
             if (!isPasswordValid) message += '- Password must be at least 8 characters and contain at least one number\n';
             alert(message);
-            return; // stop here
+            return; 
         }
 
         const data = {

@@ -19,9 +19,10 @@ function renderGames(games) {
     const list = document.querySelector('.scrolloverflow');
     list.innerHTML = '';
 
-    // Add the "no games found" message so it can be shown/hidden via card-hidden
+    // Add the "no games found" message
     const noGamesLi = document.createElement('li');
-    noGamesLi.className = 'no-games-card card-hidden';
+    noGamesLi.className = 'no-games-card';
+    noGamesLi.style.display = games.length === 0 ? 'flex' : 'none';
     noGamesLi.innerHTML = '<span class="material-symbols-outlined">search_off</span> No games found matching your filters';
     list.appendChild(noGamesLi);
 
@@ -29,11 +30,16 @@ function renderGames(games) {
     games.forEach(game => {
         const li = document.createElement('li');
         li.className = 'card';
-        li.dataset.gameId = game.id;
-
+        
         // Determine button text and state based on statusId
         let borrowText = 'Borrow';
         let borrowDisabled = false;
+
+        const tagsHTML = game.tags && game.tags.length > 0
+            ? game.tags.map(tag => `<span class="boxes">${tag.name}</span>`).join('')
+            : '<span class="boxes">No tags</span>';
+
+        let statusColor = '';
 
         switch (game.statusId) {
             case 1:
@@ -41,16 +47,19 @@ function renderGames(games) {
                 borrowDisabled = false;
                 break;
             case 2:
-                borrowText = 'Already Borrowed';
+                borrowText = game.statusName;
                 borrowDisabled = true;
+                statusColor = 'var(--blue-300)';
                 break;
             case 3:
-                borrowText = 'Try Borrow';
+                borrowText = 'Requested';
                 borrowDisabled = false;
+                statusColor = 'var(--warning)';
                 break;
             case 4:
-                borrowText = 'Unavailable';
+                borrowText = game.statusName;
                 borrowDisabled = true;
+                statusColor = 'var(--blue-300)';
                 break;
         }
 
@@ -60,39 +69,57 @@ function renderGames(games) {
             <h1>${game.title}</h1>
             <p>${game.description}</p>
             <section class="button-container">
+                <div class="tags-container">${tagsHTML}</div>
                 <div class="button-group">
                     ${allowEdit ? `<button class="button button-primary edit-button" data-id="${game.id}">Edit</button>` : ''}                        
-                    <button class="button button-primary borrow-button" data-id="${game.id}" ${borrowDisabled ? 'disabled' : ''}>${borrowText}</button>
+                    <button class="button button-primary borrow-button" data-id="${game.id}" ${borrowDisabled ? 'disabled' : ''} style="background: ${statusColor};">${borrowText}</button>
                 </div>
             </section>
         </article>`;
 
         list.appendChild(li);
     });
+
+    attachGameButtons();
 }
 
 // Get Active Filters
 function getActiveFilters() {
-    const filterMap = new Map();
+    const tagFilters = new Map();
+    const statusFilters = new Set();
 
-    document.querySelectorAll('.filters-form input[type="checkbox"]:checked').forEach(cb => {
+    // Get tag filters (those with data-group attribute)
+    document.querySelectorAll('.filters-form input[type="checkbox"]:checked[data-group]').forEach(cb => {
         const tagId = Number(cb.value);
         const groupId = Number(cb.dataset.group);
 
-        if (!filterMap.has(groupId)) {
-            filterMap.set(groupId, new Set());
+        if (!tagFilters.has(groupId)) {
+            tagFilters.set(groupId, new Set());
         }
-        filterMap.get(groupId).add(tagId);
+        tagFilters.get(groupId).add(tagId);
     });
 
-    return filterMap;
+    // Get status filters (those with data-status attribute)
+    document.querySelectorAll('.filters-form input[type="checkbox"]:checked[data-status]').forEach(cb => {
+        statusFilters.add(Number(cb.value));
+    });
+
+    return { tagFilters, statusFilters };
 }
 
 // Game Matches Filters
 function gameMatchesFilters(game, filters) {
-    if (filters.size === 0) return true;
+    const { tagFilters, statusFilters } = filters;
 
-    for (const [groupId, selectedTagIds] of filters.entries()) {
+    // Check status filter first
+    if (statusFilters.size > 0 && !statusFilters.has(game.statusId)) {
+        return false;
+    }
+
+    // Check tag filters (AND between groups, OR within group)
+    if (tagFilters.size === 0) return true;
+
+    for (const [groupId, selectedTagIds] of tagFilters.entries()) {
         const hasMatchInGroup = (game.tags || []).some(t =>
             t.tagGroupId === groupId && selectedTagIds.has(t.id)
         );
@@ -103,33 +130,11 @@ function gameMatchesFilters(game, filters) {
     return true;
 }
 
-// Filter Rendered Games
-function applyFilters(filters) {
-    const cards = document.querySelectorAll('.scrolloverflow .card');
-    let listEmpty = true;
-
-    cards.forEach(card => {
-        const gameId = Number(card.dataset.gameId);
-        const game = gamesData.find(g => g.id === gameId);
-        if (!game) return;
-
-        if (gameMatchesFilters(game, filters)) {
-            card.classList.remove('card-hidden');
-            listEmpty = false;
-        } else {
-            card.classList.add('card-hidden');
-        }
-    });
-
-    // Show or hide the "no games found" message
-    const noGamesLi = document.querySelector('.scrolloverflow .no-games-card');
-    if (noGamesLi) {
-        if (listEmpty) {
-            noGamesLi.classList.remove('card-hidden');
-        } else {
-            noGamesLi.classList.add('card-hidden');
-        }
-    }
+// Apply Filters - Re-render with filtered games
+function applyFilters() {
+    const filters = getActiveFilters();
+    const filteredGames = gamesData.filter(game => gameMatchesFilters(game, filters));
+    renderGames(filteredGames);
 }
 
 // Attach Event Listeners to Card Buttons and Filters
@@ -147,14 +152,14 @@ function attachGameButtons() {
             openModal(gameId);
         });
     });
-
-    document.addEventListener('change', e => {
-        if (e.target && e.target.matches('.filters-form input[type="checkbox"]')) {
-            filterMap = getActiveFilters();
-            applyFilters(filterMap);
-        }
-    });
 }
+
+// Listen for filter changes (only attach once)
+document.addEventListener('change', e => {
+    if (e.target && e.target.matches('.filters-form input[type="checkbox"]')) {
+        applyFilters();
+    }
+});
 
 // Borrow Game
 function borrowGame(gameId, buttonElement) {
@@ -168,6 +173,7 @@ function borrowGame(gameId, buttonElement) {
         .then(async response => {
             if (response.ok) {
                 buttonElement.textContent = 'Borrowed';
+                buttonElement.disabled = true;
             } else {
                 const errorText = await response.text();
                 if (response.status === 401) {
@@ -203,24 +209,34 @@ function openModal(gameId) {
 
 // Attach Modal listeners
 function attachModalListeners() {
-    document.getElementById('button-save').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
+    const saveButton = document.getElementById('button-save');
+    if (saveButton) {
+        saveButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            const form = document.querySelector('.game-edit-form');
+            const formData = new FormData(form);
 
-        fetch('/Admin/EditGame', {
-            method: 'POST',
-            body: formData
-        }).then(() => location.reload());
-    });
+            fetch('/Admin/EditGame', {
+                method: 'POST',
+                body: formData
+            }).then(() => location.reload());
+        });
+    }
 
-    document.getElementById('button-delete').addEventListener('click', function () {
-        const gameId = document.getElementById('gameId').value;
-        fetch(`/Admin/DeleteGame/${gameId}`, {
-            method: 'POST'
-        }).then(() => location.reload());
-    });
+    const deleteButton = document.getElementById('button-delete');
+    if (deleteButton) {
+        deleteButton.addEventListener('click', function () {
+            const gameId = document.getElementById('gameId').value;
+            fetch(`/Admin/DeleteGame/${gameId}`, {
+                method: 'POST'
+            }).then(() => location.reload());
+        });
+    }
 
-    document.getElementById('button-cancel').addEventListener('click', function () {
-        document.getElementById('editGame').close();
-    });
+    const cancelButton = document.getElementById('button-cancel');
+    if (cancelButton) {
+        cancelButton.addEventListener('click', function () {
+            document.getElementById('editGame').close();
+        });
+    }
 }

@@ -52,8 +52,9 @@
   --white: #ffffff;
 
   /* Confirm/Deny */
-  --success-green: #00ff21;
-  --fail-red: #c2410c;
+  --success: #10b981;
+  --warning: #ffb700ff;
+  --fail: #f87171;
 
   /* Font properties */
   /* Sizes */
