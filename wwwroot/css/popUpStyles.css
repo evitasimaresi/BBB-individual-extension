@@ -1,0 +1,150 @@
+/* the registration pop-up */
+#dialog-box {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-lg);
+    background: var(--gray-100);
+    color: var(--gray-800);
+    font-family: "Inter", serif;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    max-width: 400px;
+}
+
+#dialog-box::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#dialog-box h2 {
+    margin-top: 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--gray-700);
+}
+
+#close-dialog {
+    margin-top: var(--margin-lg);
+    padding: var(--padding-xs) var(--gap-lg);
+    border: none;
+    border-radius: var(--border-radius-2x1);
+    background: var(--orange-500);
+    color: var(--white);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: background var(--transition-normal), transform 0.1s ease;
+}
+
+#close-dialog:hover {
+    background: var(--orange-400);
+}
+
+#close-dialog:active {
+    background: var(--orange-600);
+    transform: scale(0.96);
+}
+
+
+/* the pop-up for editing games */
+#editGame {
+    font-family: "Inter", sans-serif;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-lg);
+    background: var(--gray-100);
+    color: var(--gray-800);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    width: 500px;
+    max-width: 95%;
+}
+
+#editGame::backdrop {
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(2px);
+}
+
+.game-edit-form {
+    margin-right: 20px;
+}
+
+.game-edit-form section {
+    margin-bottom: var(--margin-lg);
+}
+
+.game-edit-form label {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--gray-700);
+}
+
+.game-edit-form input,
+.game-edit-form textarea {
+    width: 100%;
+    padding: var(--padding-xs);
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    font-size: var(--font-size-base);
+    outline-color: var(--orange-500);
+}
+
+.game-edit-form textarea {
+    resize: vertical;
+}
+
+#button-delete {
+    border: none;
+    border-radius: var(--border-radius-2x1);
+    padding: var(--padding-xs) var(--gap-xl);
+    background: var(--fail-red);
+    color: var(--white);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: background var(--transition-normal), transform 0.1s ease;
+}
+
+#button-delete:hover {
+    background: #a63409;
+}
+#button-delete:active {
+    transform: scale(0.96);
+}
+
+#button-cancel {
+    border: none;
+    border-radius: var(--border-radius-2x1);
+    padding: var(--padding-xs) var(--gap-xl);
+    background: var(--gray-400);
+    color: var(--white);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: background var(--transition-normal), transform 0.1s ease;
+}
+
+#button-cancel:hover {
+    background: var(--gray-500);
+}
+#button-cancel:active {
+    transform: scale(0.96);
+}
+
+#button-save {
+    border: none;
+    border-radius: var(--border-radius-2x1);
+    padding: var(--padding-xs) var(--gap-xl);
+    background: var(--orange-500);
+    color: var(--white);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: background var(--transition-normal), transform 0.1s ease;
+}
+
+#button-save:hover {
+    background: var(--orange-400);
+}
+#button-save:active {
+    background: var(--orange-600);
+    transform: scale(0.96);
+}
+
+.game-edit-form button {
+    margin-right: var(--margin-sm);
+}
