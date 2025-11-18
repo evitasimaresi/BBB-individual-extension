@@ -29,14 +29,12 @@ public class AccountController : Controller
         User? user = _context.Users.FirstOrDefault(u => u.Username == username);
         if (user == null)
         {
-            ViewBag.Error = "Invalid username or password";
-            return RedirectToAction("Login", "Account");
+            return StatusCode(418, "I'm a teapot");
         }
         Auth? auth = _context.Auths.FirstOrDefault(a => a.UserId == user.Id);
         if (auth == null)
         {
-            ViewBag.Error = "Invalid username or password";
-            return RedirectToAction("Login", "Account");
+            return StatusCode(418, "I'm a teapot");
         }
 
         if (PBKDF2Hasher.Verify(password, auth.PasswordHash, auth.Token ?? ""))
@@ -45,8 +43,8 @@ public class AccountController : Controller
             HttpContext.Session.SetString("Username", user.Username);
             return RedirectToAction("Index", "Home");
         }
-        ViewBag.Error = "Invalid username or password";
-        return RedirectToAction("Login", "Account");
+
+        return StatusCode(418, "I'm a teapot");
     }
 
     [HttpGet]

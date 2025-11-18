@@ -14,11 +14,12 @@ public class AdminController : Controller
     {
         _db = db;
     }
-    public IActionResult GameForm()
+
+    private bool AdminCheck()
     {
         var userId = HttpContext.Session.GetString("UserId");
         if (!int.TryParse(userId, out var userID))
-            return RedirectToAction("Index", "Home");
+            return false;
 
         var user = _db.Users
             .Where(u => u.Id == userID)
@@ -26,7 +27,13 @@ public class AdminController : Controller
             .FirstOrDefault();
 
         if (user == null || user.Name != "admin")
-            return RedirectToAction("Index", "Home");
+            return false;
+
+        return true;
+    }
+    public IActionResult GameForm()
+    {
+        if (!AdminCheck()) return RedirectToAction("Index", "Home");
 
         var tagGroups = _db.TagGroups
             .Include(tg => tg.Tags)
@@ -39,6 +46,8 @@ public class AdminController : Controller
     [HttpPost]
     public async Task<ActionResult> AddGame(string gameTitle, string gameDesc, IFormFile gameCover, string gameCond, string gameLink, [FromForm] IFormCollection form)
     {
+        if (!AdminCheck()) return RedirectToAction("Index", "Home");
+
         string relativePath = "";
 
             var tagIds = new List<int>();
@@ -108,17 +117,7 @@ public class AdminController : Controller
     /* Approve Form */ 
     public IActionResult ApproveForm()
     {
-        var userId = HttpContext.Session.GetString("UserId");
-        if (!int.TryParse(userId, out var userID))
-            return RedirectToAction("Index", "Home");
-
-        var user = _db.Users
-            .Where(u => u.Id == userID)
-            .Select(u => new { u.Role.Name })
-            .FirstOrDefault();
-
-        if (user == null || user.Name != "admin")
-            return RedirectToAction("Index", "Home");
+        if (!AdminCheck()) return RedirectToAction("Index", "Home");
 
         var requests = _db.BoardGameUsers
             .Include(r => r.User)
@@ -136,6 +135,8 @@ public class AdminController : Controller
     [HttpPost]
     public IActionResult SaveApproveForm([FromBody] List<BoardGameUserDecisionDto> decisions)
     {
+        if (!AdminCheck()) return RedirectToAction("Index", "Home");
+
         if (decisions == null || !decisions.Any())
             return BadRequest("No decisions received.");
 
@@ -234,17 +235,7 @@ public class AdminController : Controller
     /* Return Form */
     public IActionResult ReturnForm()
     {
-        var userId = HttpContext.Session.GetString("UserId");
-        if (!int.TryParse(userId, out var uid))
-            return RedirectToAction("Index", "Home");
-
-        var user = _db.Users
-            .Where(u => u.Id == uid)
-            .Select(u => u.Role.Name)
-            .FirstOrDefault();
-
-        if (user != "admin")
-            return RedirectToAction("Index", "Home");
+        if (!AdminCheck()) return RedirectToAction("Index", "Home");
 
         var borrowed = _db.BoardGameUsers
             .Include(r => r.User)
@@ -260,6 +251,8 @@ public class AdminController : Controller
     [HttpPost]
     public IActionResult SaveReturnForm([FromBody] List<ReturnDto> results)
     {
+        if (!AdminCheck()) return RedirectToAction("Index", "Home");
+
         if (results == null || !results.Any())
             return BadRequest("No data received.");
 
@@ -288,6 +281,8 @@ public class AdminController : Controller
     [HttpGet]
     public IActionResult GetOneGame(int gameId)
     {
+        if (!AdminCheck()) return RedirectToAction("Index", "Home");
+
         BoardGame? oneGame = _db.BoardGames.FirstOrDefault(g => g.Id == gameId);
 
         if (oneGame == null)
@@ -310,6 +305,19 @@ public class AdminController : Controller
     [HttpPost]
     public IActionResult EditGame(int Id, string gameTitle, string gameDesc, IFormFile gameCover)
     {
+        if (!AdminCheck()) return RedirectToAction("Index", "Home");
+
+        var userId = HttpContext.Session.GetString("UserId");
+        if (!int.TryParse(userId, out var userID))
+            return RedirectToAction("Index", "Home");
+
+        var user = _db.Users
+            .Where(u => u.Id == userID)
+            .Select(u => new { u.Role.Name })
+            .FirstOrDefault();
+
+        if (user == null || user.Name != "admin")
+            return RedirectToAction("Index", "Home");
         string relativePath = "";
 
         if (gameCover != null && gameCover.Length > 0)
@@ -344,6 +352,8 @@ public class AdminController : Controller
     [HttpPost]
     public IActionResult DeleteGame(int Id)
     {
+        if (!AdminCheck()) return RedirectToAction("Index", "Home");
+
         var oneGame = _db.BoardGames.FirstOrDefault(x => x.Id == Id);
         if (oneGame != null)
         {
