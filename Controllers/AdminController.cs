@@ -193,6 +193,8 @@ public class AdminController : Controller
                 isValid = true;
             else if (countApprove == 1 && countDeny == values.Count - 1 && countNone == 0)
                 isValid = true;
+            else if (countApprove == 0)
+                isValid = true;
 
             if (!isValid)
             {

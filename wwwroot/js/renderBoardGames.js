@@ -1,6 +1,6 @@
 // Variables
 let gamesData = [];
-let filterMap = new Map();
+let filterMap = {};
 
 // Fetch A list of games from the server, render them and attach event listeners
 fetch('/Home/GetGames')
@@ -19,10 +19,9 @@ function renderGames(games) {
     const list = document.querySelector('.scrolloverflow');
     list.innerHTML = '';
 
-    // Add the "no games found" message
+    // Add the "no games found" message so it can be shown/hidden via card-hidden
     const noGamesLi = document.createElement('li');
-    noGamesLi.className = 'no-games-card';
-    noGamesLi.style.display = games.length === 0 ? 'flex' : 'none';
+    noGamesLi.className = 'no-games-card card-hidden';
     noGamesLi.innerHTML = '<span class="material-symbols-outlined">search_off</span> No games found matching your filters';
     list.appendChild(noGamesLi);
 
@@ -30,11 +29,13 @@ function renderGames(games) {
     games.forEach(game => {
         const li = document.createElement('li');
         li.className = 'card';
+        li.dataset.gameId = game.id;
         
         // Determine button text and state based on statusId
         let borrowText = 'Borrow';
         let borrowDisabled = false;
 
+        // Populate tags
         const tagsHTML = game.tags && game.tags.length > 0
             ? game.tags.map(tag => `<span class="boxes">${tag.name}</span>`).join('')
             : '<span class="boxes">No tags</span>';
@@ -79,8 +80,6 @@ function renderGames(games) {
 
         list.appendChild(li);
     });
-
-    attachGameButtons();
 }
 
 // Get Active Filters
@@ -130,11 +129,33 @@ function gameMatchesFilters(game, filters) {
     return true;
 }
 
-// Apply Filters - Re-render with filtered games
-function applyFilters() {
-    const filters = getActiveFilters();
-    const filteredGames = gamesData.filter(game => gameMatchesFilters(game, filters));
-    renderGames(filteredGames);
+// Filter Rendered Games
+function applyFilters(filters) {
+    const cards = document.querySelectorAll('.scrolloverflow .card');
+    let listEmpty = true;
+
+    cards.forEach(card => {
+        const gameId = Number(card.dataset.gameId);
+        const game = gamesData.find(g => g.id === gameId);
+        if (!game) return;
+
+        if (gameMatchesFilters(game, filters)) {
+            card.classList.remove('card-hidden');
+            listEmpty = false;
+        } else {
+            card.classList.add('card-hidden');
+        }
+    });
+
+    // Show or hide the "no games found" message
+    const noGamesLi = document.querySelector('.scrolloverflow .no-games-card');
+    if (noGamesLi) {
+        if (listEmpty) {
+            noGamesLi.classList.remove('card-hidden');
+        } else {
+            noGamesLi.classList.add('card-hidden');
+        }
+    }
 }
 
 // Attach Event Listeners to Card Buttons and Filters
@@ -152,14 +173,14 @@ function attachGameButtons() {
             openModal(gameId);
         });
     });
-}
 
-// Listen for filter changes (only attach once)
-document.addEventListener('change', e => {
-    if (e.target && e.target.matches('.filters-form input[type="checkbox"]')) {
-        applyFilters();
-    }
-});
+    document.addEventListener('change', e => {
+        if (e.target && e.target.matches('.filters-form input[type="checkbox"]')) {
+            filterMap = getActiveFilters();
+            applyFilters(filterMap);
+        }
+    });
+}
 
 // Borrow Game
 function borrowGame(gameId, buttonElement) {
@@ -173,7 +194,6 @@ function borrowGame(gameId, buttonElement) {
         .then(async response => {
             if (response.ok) {
                 buttonElement.textContent = 'Borrowed';
-                buttonElement.disabled = true;
             } else {
                 const errorText = await response.text();
                 if (response.status === 401) {
@@ -209,34 +229,24 @@ function openModal(gameId) {
 
 // Attach Modal listeners
 function attachModalListeners() {
-    const saveButton = document.getElementById('button-save');
-    if (saveButton) {
-        saveButton.addEventListener('click', function (e) {
-            e.preventDefault();
-            const form = document.querySelector('.game-edit-form');
-            const formData = new FormData(form);
+    document.getElementById('button-save').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
 
-            fetch('/Admin/EditGame', {
-                method: 'POST',
-                body: formData
-            }).then(() => location.reload());
-        });
-    }
+        fetch('/Admin/EditGame', {
+            method: 'POST',
+            body: formData
+        }).then(() => location.reload());
+    });
 
-    const deleteButton = document.getElementById('button-delete');
-    if (deleteButton) {
-        deleteButton.addEventListener('click', function () {
-            const gameId = document.getElementById('gameId').value;
-            fetch(`/Admin/DeleteGame/${gameId}`, {
-                method: 'POST'
-            }).then(() => location.reload());
-        });
-    }
+    document.getElementById('button-delete').addEventListener('click', function () {
+        const gameId = document.getElementById('gameId').value;
+        fetch(`/Admin/DeleteGame/${gameId}`, {
+            method: 'POST'
+        }).then(() => location.reload());
+    });
 
-    const cancelButton = document.getElementById('button-cancel');
-    if (cancelButton) {
-        cancelButton.addEventListener('click', function () {
-            document.getElementById('editGame').close();
-        });
-    }
+    document.getElementById('button-cancel').addEventListener('click', function () {
+        document.getElementById('editGame').close();
+    });
 }

@@ -3,18 +3,151 @@ using BBB.Models;
 using BBB.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 public class AccountController : Controller
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _db;
 
     public AccountController(AppDbContext context)
     {
-        _context = context;
+        _db = context;
     }
+
+    public IActionResult Index()
+    {
+        var userIdStr = HttpContext.Session.GetString("UserId");
+        int userId;
+        // USER NOT FOUND
+        if (!int.TryParse(userIdStr, out userId))
+            return StatusCode(418, "I'm a teapot");
+        
+        var vm = GetEditAccountModel(userId);
+        if (vm == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        return View("Account", vm);
+    }
+    // POST: /Home/Account
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Account(EditAccountModel model)
+    {
+        var userIdStr = HttpContext.Session.GetString("UserId");
+        Debug.WriteLine($"{model.BorrowedCount} XDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+        int userId;
+        // USER NOT FOUND
+        if (!int.TryParse(userIdStr, out userId))
+            return StatusCode(418, "I'm a teapot");
+        
+        var user = _db.Users.Include(u => u.Auth).FirstOrDefault(u => u.Id == userId);
+
+        if (user == null)
+            return RedirectToAction("Login", "Account");
+
+        // update username + email
+        user.Username = model.Username.Trim();
+        string? error = null;
+        string? message = null;
+        // password update
+        if (!string.IsNullOrWhiteSpace(model.NewPassword) ||
+            !string.IsNullOrWhiteSpace(model.ConfirmPassword))
+        {
+            if (string.IsNullOrWhiteSpace(model.NewPassword) ||
+                string.IsNullOrWhiteSpace(model.ConfirmPassword))
+            {
+                error = "Password fields cannot be empty.";
+            }
+            else if (model.NewPassword != model.ConfirmPassword)
+            {
+                error = "Passwords do not match.";
+            }
+            else
+            {
+                // password hashing
+                byte[] salt = RandomNumberGenerator.GetBytes(16);
+                string saltBase64 = Convert.ToBase64String(salt);
+
+                byte[] hash = PBKDF2Hasher.Hash(model.NewPassword, salt);
+                string hashBase64 = Convert.ToBase64String(hash);
+
+                user.Auth.PasswordHash = hashBase64;
+                user.Auth.Token = saltBase64;
+            }
+        }
+
+        if (error == null)
+        {
+            _db.SaveChanges();
+            message = "Your information has been updated successfully.";
+            HttpContext.Session.SetString("Username", user.Username);
+        }
+        var vm = GetEditAccountModel(userId);
+        if(vm == null) return View("Account", vm);
+        vm.Error = error;
+        vm.Message = message;
+        return View("Account", vm);
+    }
+
+
+    [HttpGet]
+    public IActionResult GetGames()
+    {
+        var statusOrder = new[] { 1, 3, 2, 4 };
+        
+        var userId = HttpContext.Session.GetString("UserId");
+        var username = HttpContext.Session.GetString("Username");
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized(); // User not logged in
+        }
+        int userID;
+        // USER NOT FOUND
+        if (!int.TryParse(userId, out userID))
+            return StatusCode(418, "I'm a teapot");
+
+        
+        var games = _db.BoardGames
+            .Where(
+                g => _db.BoardGameUsers.FirstOrDefault(
+                    bgu => bgu.UserId == userID &&
+                    (bgu.ReturnDate == null || bgu.ReturnDate > DateTime.Now ) &&
+                    g.Id == bgu.BoardGameId
+                ) != null
+            )
+            .Select(g => new
+            {
+                g.Id,
+                g.Title,
+                g.Description,
+                g.Image,
+                Tags = g.BoardGameTags.Select(bt => new
+                {
+                    Id = bt.Tag.Id,
+                    Name = bt.Tag.Name,
+                    TagGroupId = bt.Tag.TagGroupId,
+                    TagGroupName = bt.Tag.TagGroup.Name,
+                }),
+                g.StatusId,
+                StatusName = g.Status.Name
+            })
+            .ToList()
+            .OrderBy(g => g.Title)
+            .GroupBy(g => g.StatusId)
+            .OrderBy(g => Array.IndexOf(statusOrder, g.Key))
+            .SelectMany(g => g)
+            .ToList();
+
+        return Json(games);
+    }
+
 
     [HttpGet]
     public IActionResult Login()
@@ -26,12 +159,12 @@ public class AccountController : Controller
     public IActionResult Login(string username, string password)
     {   
         
-        User? user = _context.Users.FirstOrDefault(u => u.Username == username);
+        User? user = _db.Users.FirstOrDefault(u => u.Username == username);
         if (user == null)
         {
             return StatusCode(418, "I'm a teapot");
         }
-        Auth? auth = _context.Auths.FirstOrDefault(a => a.UserId == user.Id);
+        Auth? auth = _db.Auths.FirstOrDefault(a => a.UserId == user.Id);
         if (auth == null)
         {
             return StatusCode(418, "I'm a teapot");
@@ -76,8 +209,8 @@ public class AccountController : Controller
             string hashBase64 = Convert.ToBase64String(hash);
 
             var user = new User { Username = userName, Email = userEmail, Auth = new Auth { PasswordHash = hashBase64, Token=saltBase64 }, RoleId = 2 };
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            _db.Users.Add(user);
+            _db.SaveChanges();
         }
 
         return RedirectToAction("Login", "Account");
@@ -92,13 +225,30 @@ public class AccountController : Controller
     [HttpPost]
     public JsonResult CheckUserAvailability([FromBody]Credentials creds)
     {
-        bool usernameTaken = _context.Users.Any(u => u.Username == creds.userName);
-        bool emailTaken = _context.Users.Any(u => u.Email == creds.userEmail);
+        bool usernameTaken = _db.Users.Any(u => u.Username == creds.userName);
+        bool emailTaken = _db.Users.Any(u => u.Email == creds.userEmail);
 
         return Json(new
         {
             usernameTaken,
             emailTaken
         });
+    }
+
+    private EditAccountModel? GetEditAccountModel(int userId)
+    {
+        var user = _db.Users.FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+            return null;
+        var borrowedCount = _db.BoardGameUsers
+            .Count(x => x.UserId == userId && x.ReturnDate == null);
+
+        var vm = new EditAccountModel
+        {
+            Username = user.Username,
+            Email = user.Email,
+            BorrowedCount = borrowedCount
+        };
+        return vm;
     }
 }

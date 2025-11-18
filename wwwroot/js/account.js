@@ -33,4 +33,32 @@ document.addEventListener("DOMContentLoaded", function () {
     if (hasError) {
         toggleForm(true);
     }
+
+    // --- LIVE PASSWORD RULE CHECK ---
+    const newPassInput = document.getElementById("NewPassword");
+    const ruleMsg = document.getElementById("passwordRuleMsg");
+
+    function validatePasswordRules() {
+        const pass = newPassInput.value;
+
+        const isLong = pass.length >= 8;
+        const hasNumber = /\d/.test(pass);
+
+        if (pass === "") {
+            ruleMsg.textContent = "";
+            return;
+        }
+
+        if (isLong && hasNumber) {
+            ruleMsg.style.color = "#10b981"; // grean fn
+            ruleMsg.textContent = "✔ Password meets the requirements.";
+        } else {
+            ruleMsg.style.color = "#ef4444"; // red bruh
+            ruleMsg.textContent =
+                "✘ Password must be at least 8 characters long and contain at least one number.";
+        }
+    }
+
+    newPassInput.addEventListener("input", validatePasswordRules);
+
 });

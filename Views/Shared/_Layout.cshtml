@@ -46,7 +46,7 @@
                     <li><a href="/Admin/ApproveForm">Approve Form</a></li>
                     <li><a href="/Admin/ReturnForm">Return Form</a></li>
                 }
-                <li><a href="/Home/Account">Account</a></li>
+                <li><a href="/Account">Account</a></li>
             }
         </ul>
     </div>
@@ -72,7 +72,7 @@
             {
                 var userName = Context.Session.GetString("Username") ?? "Member";
 
-                <div class="user_navbar" onclick="window.location.href='/Home/Account'">
+                <div class="user_navbar" onclick="window.location.href='/Account'">
                     <svg viewBox="0 0 24 24">
                         <circle cx="12" cy="8" r="4" />
                         <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
@@ -122,7 +122,7 @@
                 <h4>Quick links</h4>
                 <div class="quick-links-container">
                     <a href="/Home/Index">Home</a>
-                    <a href="/Home/Account">Account</a>
+                    <a href="/Account">Account</a>
                     <a href="#">Library</a>
                     <a href="/Admin/GameForm">Game Form</a>
                 </div>
