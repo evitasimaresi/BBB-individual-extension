@@ -238,3 +238,13 @@ function attachModalListeners() {
         });
     }
 }
+
+// Attach Search Bar listener
+const searchButton = document.getElementById('game-search-form');
+if (searchButton) {
+    searchButton.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const query = this.querySelector('input[type="text"]').value;
+        console.log('Search triggered:', query);
+    });
+}
