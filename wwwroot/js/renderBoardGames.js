@@ -79,8 +79,6 @@ function renderGames(games) {
 
         list.appendChild(li);
     });
-
-    attachGameButtons();
 }
 
 // Get Active Filters
