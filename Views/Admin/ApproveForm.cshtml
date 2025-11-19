@@ -1,4 +1,7 @@
 @model List<BBB.Models.BoardGameUser>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <div class="approve-top-buttons">
     <button id="approve-all">Approve All</button>
@@ -7,6 +10,7 @@
     <button id="save-changes">Save Changes</button>
 </div>
 
+<main style="min-height:73vh">
 <div class="approve-cards-container">
     @foreach (var bgu in Model)
     {
@@ -34,5 +38,7 @@
         </div>
     }
 </div>
+</main>
+
 
 <script src="~/js/approveForm.js"></script>
