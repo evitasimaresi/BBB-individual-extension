@@ -114,7 +114,7 @@ public class AdminController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    /* Approve Form */ 
+    // Page to review borrow requests
     public IActionResult ApproveForm()
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
@@ -233,8 +233,7 @@ public class AdminController : Controller
         _db.SaveChanges();
         return Ok();
     }
-
-    /* Return Form */
+ 
     public IActionResult ReturnForm()
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
@@ -278,8 +277,8 @@ public class AdminController : Controller
         return Ok();
     }
 
-    // for editing games:
-    // GET game
+    // Editing a single game
+
     [HttpGet]
     public IActionResult GetOneGame(int gameId)
     {
@@ -303,7 +302,6 @@ public class AdminController : Controller
         return Json(result);
     }
 
-    // POST updated game
     [HttpPost]
     public IActionResult EditGame(int Id, string gameTitle, string gameDesc, IFormFile gameCover)
     {
@@ -350,7 +348,6 @@ public class AdminController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    // POST delete game
     [HttpPost]
     public IActionResult DeleteGame(int Id)
     {
@@ -364,7 +361,6 @@ public class AdminController : Controller
         }
             else return BadRequest("Cannot delete a game with this status.");
 
-        // should probably return an http message // might wanna add "are you sure" message
         return Ok();
     }
 }

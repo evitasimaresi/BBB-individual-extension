@@ -13,7 +13,6 @@ fetch('/Home/GetGames')
     })
     .catch(error => console.error('Error fetching games:', error));
 
-// Render Games Function
 function renderGames(games) {
     // Clear existing list
     const list = document.querySelector('.scrolloverflow');
@@ -30,7 +29,7 @@ function renderGames(games) {
         const li = document.createElement('li');
         li.className = 'card';
         li.dataset.gameId = game.id;
-        
+
         // Determine button text and state based on statusId
         let borrowText = 'Borrow';
         let borrowDisabled = false;
@@ -82,7 +81,6 @@ function renderGames(games) {
     });
 }
 
-// Get Active Filters
 function getActiveFilters() {
     const tagFilters = new Map();
     const statusFilters = new Set();
@@ -110,7 +108,6 @@ function getActiveFilters() {
     return { tagFilters, statusFilters, queryFilters, queryActive };
 }
 
-// Game Matches Filters
 function gameMatchesFilters(game, filters) {
     // Check query filter
     if (filters.queryActive && !filters.queryFilters.includes(game.id)) {
@@ -189,7 +186,6 @@ function attachGameButtons() {
     });
 }
 
-// Borrow Game
 function borrowGame(gameId, buttonElement) {
     fetch('/Home/BorrowGame', {
         method: 'POST',

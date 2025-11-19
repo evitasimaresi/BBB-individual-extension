@@ -1,5 +1,3 @@
-// account.js
-
 document.addEventListener("DOMContentLoaded", function () {
 
     const editToggleBtn = document.getElementById("editToggleBtn");
@@ -34,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleForm(true);
     }
 
-    // --- LIVE PASSWORD RULE CHECK ---
+    // Password check
     const newPassInput = document.getElementById("NewPassword");
     const ruleMsg = document.getElementById("passwordRuleMsg");
 
@@ -50,10 +48,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (isLong && hasNumber) {
-            ruleMsg.style.color = "#10b981"; // grean fn
+            ruleMsg.style.color = "#10b981"; 
             ruleMsg.textContent = "✔ Password meets the requirements.";
         } else {
-            ruleMsg.style.color = "#ef4444"; // red bruh
+            ruleMsg.style.color = "#ef4444"; 
             ruleMsg.textContent =
                 "✘ Password must be at least 8 characters long and contain at least one number.";
         }

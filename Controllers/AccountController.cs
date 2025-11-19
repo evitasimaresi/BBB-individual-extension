@@ -22,10 +22,10 @@ public class AccountController : Controller
     {
         var userIdStr = HttpContext.Session.GetString("UserId");
         int userId;
-        // USER NOT FOUND
+
         if (!int.TryParse(userIdStr, out userId))
             return StatusCode(418, "I'm a teapot");
-        
+
         var vm = GetEditAccountModel(userId);
         if (vm == null)
         {
@@ -40,12 +40,12 @@ public class AccountController : Controller
     public IActionResult Account(EditAccountModel model)
     {
         var userIdStr = HttpContext.Session.GetString("UserId");
-        Debug.WriteLine($"{model.BorrowedCount} XDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+        Debug.WriteLine($"{model.BorrowedCount} XD");
         int userId;
-        // USER NOT FOUND
+
         if (!int.TryParse(userIdStr, out userId))
             return StatusCode(418, "I'm a teapot");
-        
+
         var user = _db.Users.Include(u => u.Auth).FirstOrDefault(u => u.Id == userId);
 
         if (user == null)
@@ -55,7 +55,7 @@ public class AccountController : Controller
         user.Username = model.Username.Trim();
         string? error = null;
         string? message = null;
-        // password update
+        // handle password change
         if (!string.IsNullOrWhiteSpace(model.NewPassword) ||
             !string.IsNullOrWhiteSpace(model.ConfirmPassword))
         {
@@ -68,9 +68,13 @@ public class AccountController : Controller
             {
                 error = "Passwords do not match.";
             }
+            else if (model.NewPassword.Length < 8 || !model.NewPassword.Any(char.IsDigit))
+            {
+                error = "Password must be at least 8 characters long and contain at least one number.";
+            }
             else
             {
-                // password hashing
+                // update hashed password + salt
                 byte[] salt = RandomNumberGenerator.GetBytes(16);
                 string saltBase64 = Convert.ToBase64String(salt);
 
@@ -89,7 +93,7 @@ public class AccountController : Controller
             HttpContext.Session.SetString("Username", user.Username);
         }
         var vm = GetEditAccountModel(userId);
-        if(vm == null) return View("Account", vm);
+        if (vm == null) return View("Account", vm);
         vm.Error = error;
         vm.Message = message;
         return View("Account", vm);
@@ -100,7 +104,7 @@ public class AccountController : Controller
     public IActionResult GetGames()
     {
         var statusOrder = new[] { 1, 3, 2, 4 };
-        
+
         var userId = HttpContext.Session.GetString("UserId");
         var username = HttpContext.Session.GetString("Username");
 
@@ -109,16 +113,16 @@ public class AccountController : Controller
             return Unauthorized(); // User not logged in
         }
         int userID;
-        // USER NOT FOUND
+
         if (!int.TryParse(userId, out userID))
             return StatusCode(418, "I'm a teapot");
 
-        
+
         var games = _db.BoardGames
             .Where(
                 g => _db.BoardGameUsers.FirstOrDefault(
                     bgu => bgu.UserId == userID &&
-                    (bgu.ReturnDate == null || bgu.ReturnDate > DateTime.Now ) &&
+                    (bgu.ReturnDate == null || bgu.ReturnDate > DateTime.Now) &&
                     g.Id == bgu.BoardGameId
                 ) != null
             )
@@ -157,8 +161,8 @@ public class AccountController : Controller
 
     [HttpPost]
     public IActionResult Login(string username, string password)
-    {   
-        
+    {
+
         User? user = _db.Users.FirstOrDefault(u => u.Username == username);
         if (user == null)
         {
@@ -190,7 +194,7 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    
+
     public IActionResult Register()
     {
         return View();
@@ -204,14 +208,14 @@ public class AccountController : Controller
 
         if (!string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(userEmail) && !string.IsNullOrWhiteSpace(userPassword) && isMatch)
         {
-            
+
             byte[] salt = RandomNumberGenerator.GetBytes(16);
             string saltBase64 = Convert.ToBase64String(salt);
-            
+
             byte[] hash = PBKDF2Hasher.Hash(userPassword, salt);
             string hashBase64 = Convert.ToBase64String(hash);
 
-            var user = new User { Username = userName, Email = userEmail, Auth = new Auth { PasswordHash = hashBase64, Token=saltBase64 }, RoleId = 2 };
+            var user = new User { Username = userName, Email = userEmail, Auth = new Auth { PasswordHash = hashBase64, Token = saltBase64 }, RoleId = 2 };
             _db.Users.Add(user);
             _db.SaveChanges();
         }
@@ -226,7 +230,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public JsonResult CheckUserAvailability([FromBody]Credentials creds)
+    public JsonResult CheckUserAvailability([FromBody] Credentials creds)
     {
         bool usernameTaken = _db.Users.Any(u => u.Username == creds.userName);
         bool emailTaken = _db.Users.Any(u => u.Email == creds.userEmail);

@@ -49,21 +49,6 @@ public class HomeController : Controller
         ViewBag.Statuses = statuses;
 
         return View(tagGroups);
-
-        // var users = _db.Users.ToList();
-        // foreach (var xd in users)
-        // {
-        //     Debug.WriteLine(_db.Auths.FirstOrDefault(a => a.UserId == xd.Id).PasswordHash);
-        // }
-
-
-        // if (!int.TryParse(userId, out userID)) return View(false);
-
-        // var user = _db.Users.FirstOrDefault(u => u.Id == userID);
-        // if (user == null) return View(false);
-        // if (user.Role.Name == "admin") return View(true);
-        // return View(false);
-
     }
 
     [HttpGet]
@@ -101,7 +86,6 @@ public class HomeController : Controller
         return Content(string.Join("\n", usr), "text/plain");
         */
     }
-    // Testing the db queries
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
@@ -175,41 +159,6 @@ public class HomeController : Controller
         return maxLen == 0 ? 100 : (int)((1.0 - (double)distance / maxLen) * 100);
     }
 
-    /*
-    [HttpGet]
-    public IActionResult SearchGames([FromQuery] string query)
-    {
-        if (string.IsNullOrWhiteSpace(query))
-            return BadRequest("Search query is null or white space");
-
-        // Get all games data
-        var games = _db.BoardGames
-            .Select(g => new
-            {
-                g.Id,
-                g.Title,
-                g.Description
-            })
-            .ToList();
-
-        // Apply fuzzy search
-        var results = games
-            .Where(g =>
-            {
-                int titleScore = Similarity(query, g.Title);
-                int descScore = string.IsNullOrEmpty(g.Description) ? 0 : Similarity(query, g.Description);
-                
-                int maxScore = Math.Max(titleScore, descScore);
-
-                // Only return matches above threshold
-                return maxScore >= 60;
-            })
-            .Select(g => g.Id)
-            .ToList();
-
-        return Json(results);
-    }
-    */
 
     [HttpGet]
     public IActionResult SearchGames([FromQuery] string query)
