@@ -591,11 +591,11 @@ footer {
 }
 
 .approve-checkboxes .approve-checkbox-label {
-  color: var(--success-green);
+  color: var(--success);
 }
 
 .approve-checkboxes .deny-checkbox-label {
-  color: var(--fail-red);
+  color: var(--fail);
 }
 
 .approve-card.processed {
@@ -672,7 +672,7 @@ footer {
   border-radius: var(--border-radius-sm);
   font-weight: var(--font-weight-bold);
   background-color: var(--gray-800);
-  color: var(--success-green);
+  color: var(--success);
 }
 
 .return-card.processed {

@@ -7,8 +7,6 @@ fetch('/Account/GetGames')
     .then(data => {
         gamesData = data; // Store fetched games
         renderGames(gamesData); // Initial render
-        attachGameButtons(); // Attach button listeners
-        attachModalListeners(); // Attach modal listeners
     })
     .catch(error => console.error('Error fetching games:', error));
 
@@ -75,6 +73,4 @@ function renderGames(games) {
 
         list.appendChild(li);
     });
-
-    attachGameButtons();
 }
