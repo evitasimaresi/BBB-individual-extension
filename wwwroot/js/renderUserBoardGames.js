@@ -22,7 +22,7 @@ function renderGames(games) {
     const noGamesLi = document.createElement('li');
     noGamesLi.className = 'no-games-card';
     noGamesLi.style.display = games.length === 0 ? 'flex' : 'none';
-    noGamesLi.innerHTML = '<span class="material-symbols-outlined">search_off</span> No games found matching your filters';
+    noGamesLi.innerHTML = '<span class="material-symbols-outlined">search_off</span> No games found';
     list.appendChild(noGamesLi);
 
     // Render All games

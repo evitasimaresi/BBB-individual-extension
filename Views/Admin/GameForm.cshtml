@@ -4,96 +4,72 @@
   Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-<html lang="en">
+<nav id="sidebar-container"></nav>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game Uploading Form - BBB</title>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="css/footer.css">`
-  <link rel="icon" type="image/x-icon" href="/Images/logo.png">
-</head>
-
-<body>
-  <nav id="sidebar-container"></nav>
-
-  <main id="main-content">
+<main id="main-content">
     <header id="navbar-container"></header>
-
 
     <h2 class="game-upload-page-title">Game Uploading Form</h2>
 
     <form class="game-upload-form" method="post" action="@Url.Action("AddGame", "Admin")" enctype="multipart/form-data">
-      <section>
-        <label for="gameTitle" style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Game
-          Title</label>
-        <input type="text" id="gameTitle" name="gameTitle" placeholder="Enter game title" required
-          style="color:var(--gray-800);">
-      </section>
+        <section>
+            <label for="gameTitle" style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Game
+                Title</label>
+            <input type="text" id="gameTitle" name="gameTitle" placeholder="Enter game title" required
+                style="color:var(--gray-800);">
+        </section>
 
-      <section>
-        <label for="gameCover" style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Game
-          Cover</label>
-        <input type="file" id="gameCover" name="gameCover" accept="image/*" required style="color:var(--gray-800);">
-      </section>
+        <section>
+            <label for="gameCover" style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Game
+                Cover</label>
+            <input type="file" id="gameCover" name="gameCover" accept="image/*" required style="color:var(--gray-800);">
+        </section>
 
-      <section>
-        <label for="gameDesc"
-          style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Description</label>
-        <textarea id="gameDesc" name="gameDesc" rows="4" placeholder="Enter description" style="color:var(--gray-800);"
-          required></textarea>
-      </section>
+        <section>
+            <label for="gameDesc"
+                style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Description</label>
+            <textarea id="gameDesc" name="gameDesc" rows="4" placeholder="Enter description" style="color:var(--gray-800);"
+                required></textarea>
+        </section>
 
-      <section>
-        <label for="gameCond"
-          style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Condition</label>
-        <input id="gameCond" name="gameCond" rows="4" placeholder="Describe game's condition"
-          style="color:var(--gray-800);" required></input>
-      </section>
+        <section>
+            <label for="gameCond"
+                style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Condition</label>
+            <input id="gameCond" name="gameCond" rows="4" placeholder="Describe game's condition"
+                style="color:var(--gray-800);" required>
+        </section>
 
-      <section>
-        <label for="gameLink"
-          style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Link</label>
-        <input id="gameLink" name="gameLink" rows="4" placeholder="Provide external URL" style="color:var(--gray-800);"
-          required></input>
-      </section>
+        <section>
+            <label for="gameLink"
+                style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Link</label>
+            <input id="gameLink" name="gameLink" rows="4" placeholder="Provide external URL" style="color:var(--gray-800);"
+                required>
+        </section>
 
-      <section>
+        <section>
         @foreach (var group in Model)
         {
-          <span style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">@group.Name</span>
-          <div class="tag-items" id="@group.Name.ToLower().Replace(" ", "")">
+            <span style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">@group.Name</span>
+            <div class="tag-items" id="@group.Name.ToLower().Replace(" ", "")">
             @foreach (var tag in group.Tags.OrderBy(t => t.Name))
             {
-              <label class="filter-option" style="color:var(--gray-800);">
+                <label class="filter-option" style="color:var(--gray-800);">
                 <input type="radio" name="tag_@group.Id" value="@tag.Id" required>
                 <span class="checkmark"></span>
                 @tag.Name
-              </label>
+                </label>
             }
-          </div>
+            </div>
         }
-      </section>
+        </section>
 
-      <button class="button button-primary" type="submit">
+        <button class="button button-primary" type="submit">
         Upload Game
-      </button>
+        </button>
     </form>
 
     <div id="footer-container"></div>
-  </main>
+</main>
 
-  <script src="~/js/sidebar.js"></script>
-  <script src="~/js/componentsLoader.js"></script>
-</body>
-
-</html>
+<script src="~/js/sidebar.js"></script>
+<script src="~/js/componentsLoader.js"></script>

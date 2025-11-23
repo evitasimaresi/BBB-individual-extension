@@ -11,16 +11,14 @@ internal class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
-        
         // Add session support
-        builder.Services.AddDistributedMemoryCache(); // Required for session
+        builder.Services.AddDistributedMemoryCache();
         builder.Services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromMinutes(30);
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
         });
-
 
         // Add database context
         builder.Services.AddSingleton<DisableWalInterceptor>();
@@ -37,7 +35,6 @@ internal class Program
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 
@@ -52,7 +49,6 @@ internal class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}")
             .WithStaticAssets();
-
 
         app.Run();
     }

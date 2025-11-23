@@ -1,14 +1,8 @@
 using BBB.Data;
 using BBB.Models;
-using BBB.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
 
 namespace BBB.Controllers;
 
@@ -64,29 +58,13 @@ public class HomeController : Controller
 
         return Json(statuses);
     }
-
     
-
     //came with the default project:
     public IActionResult Privacy()
     {
         return View();
     }
-
-    // Testing the db queries
-    public async Task<IActionResult> Test()
-    {
-        var foo = await _db.BoardGameUsers.Where(x => x.UserId == 4).ToListAsync();
-        var lines = foo.Select(x => $"{x.BoardGame.Title} - Borrowed on: {x.BorrowDate:yyyy-MM-dd} - Returned on: {x.ReturnDate:yyyy-MM-dd}");
-        return Content(string.Join("\n", lines), "text/plain");
-
-        /*
-        var usernames = await _db.BoardGames.Where(x => x.Title == "Catan").FirstAsync();
-        var usr = usernames.BoardGameTags.Select(x => x.Tag.Name);
-        return Content(string.Join("\n", usr), "text/plain");
-        */
-    }
-
+    
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
@@ -125,7 +103,7 @@ public class HomeController : Controller
         return Json(games);
     }
 
-    // Fuzzy search functions
+    // fuzzy search functions
     private int LevenshteinDistance(string s, string t)
     {
         if (string.IsNullOrEmpty(s)) return string.IsNullOrEmpty(t) ? 0 : t.Length;
@@ -151,14 +129,13 @@ public class HomeController : Controller
         return d[s.Length, t.Length];
     }
 
-    // Convert distance to similarity percentage (0-100)
+    // convert distance to similarity % 0-100
     private int Similarity(string s, string t)
     {
         int distance = LevenshteinDistance(s.ToLower(), t.ToLower());
         int maxLen = Math.Max(s.Length, t.Length);
         return maxLen == 0 ? 100 : (int)((1.0 - (double)distance / maxLen) * 100);
     }
-
 
     [HttpGet]
     public IActionResult SearchGames([FromQuery] string query)
@@ -172,7 +149,7 @@ public class HomeController : Controller
             .Where(t => !string.IsNullOrWhiteSpace(t))
             .ToArray();
 
-        // Get all games data
+        // Get trimmed games data
         var games = _db.BoardGames
             .Select(g => new
             {
@@ -197,7 +174,7 @@ public class HomeController : Controller
                     return true;
                 }
 
-                // compute average best-match per token
+                // compute average best match per token
                 var tokenScores = qTokens.Select(q =>
                 {
                     // compare token against full title/description
@@ -268,5 +245,4 @@ public class HomeController : Controller
 
         return Ok(new { message = $"Game borrowed by {username}" });
     }
-
 }

@@ -1,13 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
 using BBB.Data;
 using BBB.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class AdminController : Controller
 {
-    
     private readonly AppDbContext _db;
 
     public AdminController(AppDbContext db)
@@ -31,6 +28,7 @@ public class AdminController : Controller
 
         return true;
     }
+
     public IActionResult GameForm()
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
@@ -41,7 +39,7 @@ public class AdminController : Controller
             .ToList();
 
         return View(tagGroups);
-}
+    }
     
     [HttpPost]
     public async Task<ActionResult> AddGame(string gameTitle, string gameDesc, IFormFile gameCover, string gameCond, string gameLink, [FromForm] IFormCollection form)
@@ -49,8 +47,7 @@ public class AdminController : Controller
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
 
         string relativePath = "";
-
-            var tagIds = new List<int>();
+        var tagIds = new List<int>();
     
         foreach (var key in form.Keys)
         {
@@ -123,10 +120,10 @@ public class AdminController : Controller
             .Include(r => r.User)
             .Include(r => r.BoardGame)
             .Where(r => r.ReturnDate == null)
-            .Where(r => r.BoardGame.StatusId == 3)      // All the unresolved borrow requests
-            .OrderBy(r => r.BoardGame.Id)               // Group by BoardGame.Id (lowest first)
-            .ThenBy(r => r.BorrowDate)                  // Sort by earliest BorrowDate
-            .ThenBy(r => r.Id)                          // Tiebreaker: lower BoardGameUser.Id first
+            .Where(r => r.BoardGame.StatusId == 3)
+            .OrderBy(r => r.BoardGame.Id)
+            .ThenBy(r => r.BorrowDate)
+            .ThenBy(r => r.Id)
             .ToList();
 
         return View(requests);
@@ -164,7 +161,7 @@ public class AdminController : Controller
             return BadRequest($"Mismatch in number of requests and decisions: Db requests: {requests.Count} Decisions: {decisions.Count}");
         
         // Validate linked entities
-        var requestMap = new Dictionary<int, List<int>>(); // BoardGameId -> Descision
+        var requestMap = new Dictionary<int, List<int>>();
         foreach (var r in requests)
         {
             // Find all decisions for this BoardGameUser
@@ -209,7 +206,7 @@ public class AdminController : Controller
             }
         }
 
-        // All validations passed, update database
+        // All validations passed, update db
         foreach (var decision in decisions)
         {
             var bgu = _db.BoardGameUsers
@@ -278,7 +275,6 @@ public class AdminController : Controller
     }
 
     // Editing a single game
-
     [HttpGet]
     public IActionResult GetOneGame(int gameId)
     {
@@ -354,12 +350,12 @@ public class AdminController : Controller
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
 
         var oneGame = _db.BoardGames.FirstOrDefault(x => x.Id == Id);
-        if (oneGame != null && oneGame.StatusId == 1 || oneGame.StatusId == 4)
+        if (oneGame != null && (oneGame.StatusId == 1 || oneGame.StatusId == 4))
         {
             _db.BoardGames.Remove(oneGame);
             _db.SaveChanges();
         }
-            else return BadRequest("Cannot delete a game with this status.");
+        else return BadRequest("Cannot delete a game with this status.");
 
         return Ok();
     }

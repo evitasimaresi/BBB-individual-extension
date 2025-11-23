@@ -23,7 +23,6 @@
     border-bottom: none;
 }
 
-
 .filter-toggle {
     width: 100%;
     display: flex;
@@ -45,7 +44,6 @@
     background-color: var(--gray-500);
 }
 
-
 .filter-toggle span:first-child {
     text-transform: uppercase;
 }
@@ -54,20 +52,17 @@
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-normal);
     color: var(--gray-400);
-    align-items: right;
+    align-items: flex-end;
     transition: transform var(--transition-normal);
 }
-
-
 
 .filter-toggle.active .filter-icon {
     transform: rotate(45deg);
 }
 
-
 .filter-content {
     display: none;
-    padding: 0; /*var(--padding-lg) var(--padding-md) var(--padding-xs); */
+    padding: 0;
     background-color: none;
 
 }
@@ -84,7 +79,6 @@
     font-size: var(--font-size-sm);
     color: var(--blue-custom-light);
     position: relative;
-
 }
 
 .filter-option input[type="checkbox"] {
@@ -105,7 +99,6 @@
     position: relative;
     transition: all var(--transition-normal);
 }
-
 
 .filter-option:hover .checkmark {
     border-color: var(--orange-500);
@@ -128,7 +121,6 @@
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
-
 
 .filter-option input:checked~.checkmark:after {
     display: block;

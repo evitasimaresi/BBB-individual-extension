@@ -1,11 +1,9 @@
 using BBB.Data;
 using BBB.Models;
 using BBB.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
@@ -34,6 +32,7 @@ public class AccountController : Controller
 
         return View("Account", vm);
     }
+
     // POST: /Home/Account
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -99,7 +98,6 @@ public class AccountController : Controller
         return View("Account", vm);
     }
 
-
     [HttpGet]
     public IActionResult GetGames()
     {
@@ -151,7 +149,6 @@ public class AccountController : Controller
 
         return Json(games);
     }
-
 
     [HttpGet]
     public IActionResult Login()
@@ -225,8 +222,8 @@ public class AccountController : Controller
 
     public class Credentials
     {
-        public string userName { get; set; }
-        public string userEmail { get; set; }
+        public required string userName { get; set; }
+        public required string userEmail { get; set; }
     }
 
     [HttpPost]

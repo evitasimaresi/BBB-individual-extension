@@ -5,7 +5,6 @@
 }
 
 <main class="account-page" style="padding: var(--padding-md);">
-
     <section class="user-info-container">
         <header>
             <h2 class="user-info-title">User Information</h2>
@@ -72,7 +71,6 @@
         </form>
     </section>
 
-
     <section class="borrowed-games" style="margin-top: 32px;">
         <header>
             <h2 class="borrowed-title">Games You Requested or Borrowed</h2>
@@ -85,62 +83,3 @@
 
 <script src="~/js/account.js"></script>
 <script src="~/js/renderUserBoardGames.js"></script>
-
-
-<style>
-    label {
-        display: block;
-        margin-top: 10px;
-        font-weight: 600;
-    }
-
-    input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        margin-bottom: 8px;
-    }
-
-    .password-wrapper {
-        position: relative;
-    }
-
-    .eye-btn {
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 18px;
-    }
-
-    .alert-danger {
-        background: #441a1a;
-        color: #ffb3b3;
-        padding: 10px 14px;
-        border-radius: 8px;
-        margin-bottom: 12px;
-    }
-
-    .alert-success {
-        background: #1c3d27;
-        color: #a7f3d0;
-        padding: 10px 14px;
-        border-radius: 8px;
-        margin-bottom: 12px;
-        margin-left: var(--padding-md);
-        margin-right: var(--padding-md);
-    }
-
-    .form-actions {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        gap: 20px;
-        background: none;
-        margin-top: 20px;
-    }
-</style>

@@ -390,8 +390,6 @@ footer {
 #sidebar-container:has(.sidebar.active)~.sidebar-response,
 .sidebar.active~.sidebar-response {
   margin-left: 200px;
-  /* same width as sidebar */
-  /*transform: scale(0.98);*/
 }
 
 /* Account page */
@@ -692,4 +690,61 @@ footer {
 
 #privacy-main p {
   color: var(--blue-custom-light)
+}
+
+/* Account */
+.edit-section label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.edit-section input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 8px;
+}
+
+.edit-section .password-wrapper {
+    position: relative;
+}
+
+.edit-section .eye-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.edit-section .alert-danger {
+    background: #441a1a;
+    color: #ffb3b3;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.edit-section .alert-success {
+    background: #1c3d27;
+    color: #a7f3d0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    margin-left: var(--padding-md);
+    margin-right: var(--padding-md);
+}
+
+.edit-section .form-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+    background: none;
+    margin-top: 20px;
 }

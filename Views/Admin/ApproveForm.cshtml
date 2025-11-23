@@ -11,34 +11,33 @@
 </div>
 
 <main style="min-height:73vh">
-<div class="approve-cards-container">
-    @foreach (var bgu in Model)
-    {
-        var hasConflict = Model.Any(x => x.BoardGame.Id == bgu.BoardGame.Id && x.Id != bgu.Id);
-        <div class="approve-card @(hasConflict ? "approve-linked-card" : "")" data-id="@bgu.Id" data-boardgameid="@bgu.BoardGame.Id">
-            @if (hasConflict)
-            {
-                <span class="approve-linked-marker">[Linked Request #@bgu.BoardGame.Id]</span>
-            }
-            <h3>Request ID: @bgu.Id</h3>
-            <h3>Board Game:</h3>
-            <p>ID: @bgu.BoardGame.Id</p>
-            <p>Title: @bgu.BoardGame.Title</p>
-            <h3>User:</h3>
-            <p>Username: @bgu.User.Username</p>
-            <p>Request Date: @bgu.BorrowDate.ToString("dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture)</p>
-            <div class="approve-checkboxes">
-                <label class="approve-checkbox-label">
-                    <input type="checkbox" class="approve-checkbox" /> Approve
-                </label>
-                <label class="deny-checkbox-label">
-                    <input type="checkbox" class="deny-checkbox" /> Deny
-                </label>
+    <div class="approve-cards-container">
+        @foreach (var bgu in Model)
+        {
+            var hasConflict = Model.Any(x => x.BoardGame.Id == bgu.BoardGame.Id && x.Id != bgu.Id);
+            <div class="approve-card @(hasConflict ? "approve-linked-card" : "")" data-id="@bgu.Id" data-boardgameid="@bgu.BoardGame.Id">
+                @if (hasConflict)
+                {
+                    <span class="approve-linked-marker">[Linked Request #@bgu.BoardGame.Id]</span>
+                }
+                <h3>Request ID: @bgu.Id</h3>
+                <h3>Board Game:</h3>
+                <p>ID: @bgu.BoardGame.Id</p>
+                <p>Title: @bgu.BoardGame.Title</p>
+                <h3>User:</h3>
+                <p>Username: @bgu.User.Username</p>
+                <p>Request Date: @bgu.BorrowDate.ToString("dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture)</p>
+                <div class="approve-checkboxes">
+                    <label class="approve-checkbox-label">
+                        <input type="checkbox" class="approve-checkbox" /> Approve
+                    </label>
+                    <label class="deny-checkbox-label">
+                        <input type="checkbox" class="deny-checkbox" /> Deny
+                    </label>
+                </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
 </main>
-
 
 <script src="~/js/approveForm.js"></script>

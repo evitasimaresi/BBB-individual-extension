@@ -7,25 +7,25 @@
 </div>
 
 <main style="min-height:73vh">
-<div class="return-cards-container">
-    @foreach (var bgu in Model)
-    {
-        <div class="return-card" data-id="@bgu.Id">
-            <h3>Borrow ID: @bgu.Id</h3>
-            <h3>Board Game:</h3>
-            <p>ID: @bgu.BoardGame.Id</p>
-            <p>Title: @bgu.BoardGame.Title</p>
-            <h3>User:</h3>
-            <p>Username: @bgu.User.Username</p>
-            <p>Borrowed: @bgu.BorrowDate.ToString("dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture)</p>
-            <div class="return-checkboxes">
-                <label class="return-checkbox-label">
-                    <input type="checkbox" class="return-checkbox" /> Returned
-                </label>
+    <div class="return-cards-container">
+        @foreach (var bgu in Model)
+        {
+            <div class="return-card" data-id="@bgu.Id">
+                <h3>Borrow ID: @bgu.Id</h3>
+                <h3>Board Game:</h3>
+                <p>ID: @bgu.BoardGame.Id</p>
+                <p>Title: @bgu.BoardGame.Title</p>
+                <h3>User:</h3>
+                <p>Username: @bgu.User.Username</p>
+                <p>Borrowed: @bgu.BorrowDate.ToString("dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture)</p>
+                <div class="return-checkboxes">
+                    <label class="return-checkbox-label">
+                        <input type="checkbox" class="return-checkbox" /> Returned
+                    </label>
+                </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
 </main>
 
 <script src="~/js/returnForm.js"></script>

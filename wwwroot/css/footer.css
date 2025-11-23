@@ -262,10 +262,8 @@ footer {
     font-size: var(--font-size-xs);
 }
 
-
 /* Bottom bar */
 .footer-bottom-bar {
-    /* flex: 1 100%; */
     width: var(--width-content);
     margin-top: var(--margin-2xl);
     border-top: var(--border-width-thin) solid var(--blue-custom-dark);
@@ -282,7 +280,6 @@ footer {
     font-weight: var(--font-weight-normal);
     font-size: var(--font-size-xs);
 }
-
 
 @media (min-width: 768px) {
     .footer-bottom-bar {
