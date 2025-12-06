@@ -29,6 +29,10 @@ internal class Program
                    .AddInterceptors(serviceProvider.GetRequiredService<DisableWalInterceptor>());
         });
 
+        // Add swagger
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -49,6 +53,13 @@ internal class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}")
             .WithStaticAssets();
+
+        // Enable swagger middleware
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
 
         app.Run();
     }
