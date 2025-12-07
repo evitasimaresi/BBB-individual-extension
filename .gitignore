@@ -484,3 +484,4 @@ $RECYCLE.BIN/
 *.swp
 *.sqlite-shm
 *.sqlite-wal
+*.github
