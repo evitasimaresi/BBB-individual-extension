@@ -17,7 +17,8 @@
                 <p>Title: @bgu.BoardGame.Title</p>
                 <h3>User:</h3>
                 <p>Username: @bgu.User.Username</p>
-                <p>Borrowed: @bgu.BorrowDate.ToString("dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture)</p>
+                <p>Borrowed: @bgu.BorrowDate.ToString("dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture)
+                </p>
                 <div class="return-checkboxes">
                     <label class="return-checkbox-label">
                         <input type="checkbox" class="return-checkbox" /> Returned
@@ -28,4 +29,6 @@
     </div>
 </main>
 
-<script src="~/js/returnForm.js"></script>
+<script type="module" src="~/js/apiClient.js"></script>
+<script type="module" src="~/js/services.js"></script>
+<script type="module" src="~/js/returnForm.js"></script>

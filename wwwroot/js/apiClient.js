@@ -47,14 +47,83 @@ async function request(endpoint, options = {}) {
 export const get = (endpoint, options = {}) =>
     request(endpoint, { ...options, method: 'GET' });
 
-export const post = (endpoint, body, options = {}) =>
-    request(endpoint, { ...options, method: 'POST', body: JSON.stringify(body) });
+export const post = (endpoint, body, options = {}) => {
+    // Handle FormData separately (don't stringify, don't set Content-Type)
+    if (body instanceof FormData) {
+        const url = endpoint.startsWith('http') || endpoint.startsWith('/Home')
+            ? endpoint
+            : `${BASE_URL}${endpoint}`;
 
-export const put = (endpoint, body, options = {}) =>
-    request(endpoint, { ...options, method: 'PUT', body: JSON.stringify(body) });
+        return fetch(url, {
+            method: 'POST',
+            body: body,
+            ...options
+        }).then(async response => {
+            const contentType = response.headers.get('content-type');
+            let data;
+
+            if (contentType && contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                data = await response.text();
+            }
+
+            if (!response.ok) {
+                throw {
+                    status: response.status,
+                    statusText: response.statusText,
+                    data
+                };
+            }
+
+            return data;
+        }).catch(error => {
+            console.error(`API Error [POST] ${url}:`, error);
+            throw error;
+        });
+    }
+
+    return request(endpoint, { ...options, method: 'POST', body: JSON.stringify(body) });
+};
+
+export const put = (endpoint, body, options = {}) => {
+    // Handle FormData separately (don't stringify, don't set Content-Type)
+    if (body instanceof FormData) {
+        const url = endpoint.startsWith('http') || endpoint.startsWith('/Home')
+            ? endpoint
+            : `${BASE_URL}${endpoint}`;
+
+        return fetch(url, {
+            method: 'PUT',
+            body: body,
+            ...options
+        }).then(async response => {
+            const contentType = response.headers.get('content-type');
+            let data;
+
+            if (contentType && contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                data = await response.text();
+            }
+
+            if (!response.ok) {
+                throw {
+                    status: response.status,
+                    statusText: response.statusText,
+                    data
+                };
+            }
+
+            return data;
+        }).catch(error => {
+            console.error(`API Error [PUT] ${url}:`, error);
+            throw error;
+        });
+    }
+
+    return request(endpoint, { ...options, method: 'PUT', body: JSON.stringify(body) });
+};
 
 export const del = (endpoint, options = {}) =>
     request(endpoint, { ...options, method: 'DELETE' });
-
-export const patch = (endpoint, body, options = {}) =>
-    request(endpoint, { ...options, method: 'PATCH', body: JSON.stringify(body) });

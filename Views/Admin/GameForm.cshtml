@@ -1,7 +1,7 @@
 @model List<BBB.Models.TagGroup>
 @{
-  ViewData["Title"] = "Admin Panel Page";
-  Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Admin Panel Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <nav id="sidebar-container"></nav>
@@ -11,16 +11,18 @@
 
     <h2 class="game-upload-page-title">Game Uploading Form</h2>
 
-    <form class="game-upload-form" method="post" action="@Url.Action("AddGame", "Admin")" enctype="multipart/form-data">
+    <form class="game-upload-form" enctype="multipart/form-data">
         <section>
-            <label for="gameTitle" style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Game
+            <label for="gameTitle"
+                style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Game
                 Title</label>
             <input type="text" id="gameTitle" name="gameTitle" placeholder="Enter game title" required
                 style="color:var(--gray-800);">
         </section>
 
         <section>
-            <label for="gameCover" style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Game
+            <label for="gameCover"
+                style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Game
                 Cover</label>
             <input type="file" id="gameCover" name="gameCover" accept="image/*" required style="color:var(--gray-800);">
         </section>
@@ -28,8 +30,8 @@
         <section>
             <label for="gameDesc"
                 style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Description</label>
-            <textarea id="gameDesc" name="gameDesc" rows="4" placeholder="Enter description" style="color:var(--gray-800);"
-                required></textarea>
+            <textarea id="gameDesc" name="gameDesc" rows="4" placeholder="Enter description"
+                style="color:var(--gray-800);" required></textarea>
         </section>
 
         <section>
@@ -42,29 +44,29 @@
         <section>
             <label for="gameLink"
                 style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">Link</label>
-            <input id="gameLink" name="gameLink" rows="4" placeholder="Provide external URL" style="color:var(--gray-800);"
-                required>
+            <input id="gameLink" name="gameLink" rows="4" placeholder="Provide external URL"
+                style="color:var(--gray-800);" required>
         </section>
 
         <section>
-        @foreach (var group in Model)
-        {
-            <span style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">@group.Name</span>
-            <div class="tag-items" id="@group.Name.ToLower().Replace(" ", "")">
-            @foreach (var tag in group.Tags.OrderBy(t => t.Name))
+            @foreach (var group in Model)
             {
-                <label class="filter-option" style="color:var(--gray-800);">
-                <input type="radio" name="tag_@group.Id" value="@tag.Id" required>
-                <span class="checkmark"></span>
-                @tag.Name
-                </label>
+                <span style="display:block; font-weight:bold; margin-bottom:5px; color:var(--gray-800);">@group.Name</span>
+                <div class="tag-items" id="@group.Name.ToLower().Replace(" ", "")">
+                    @foreach (var tag in group.Tags.OrderBy(t => t.Name))
+                    {
+                        <label class="filter-option" style="color:var(--gray-800);">
+                            <input type="radio" name="tag_@group.Id" value="@tag.Id" required>
+                            <span class="checkmark"></span>
+                            @tag.Name
+                        </label>
+                    }
+                </div>
             }
-            </div>
-        }
         </section>
 
         <button class="button button-primary" type="submit">
-        Upload Game
+            Upload Game
         </button>
     </form>
 
@@ -73,3 +75,4 @@
 
 <script src="~/js/sidebar.js"></script>
 <script src="~/js/componentsLoader.js"></script>
+<script type="module" src="~/js/gameForm.js"></script>

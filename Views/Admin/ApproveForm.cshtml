@@ -15,7 +15,8 @@
         @foreach (var bgu in Model)
         {
             var hasConflict = Model.Any(x => x.BoardGame.Id == bgu.BoardGame.Id && x.Id != bgu.Id);
-            <div class="approve-card @(hasConflict ? "approve-linked-card" : "")" data-id="@bgu.Id" data-boardgameid="@bgu.BoardGame.Id">
+            <div class="approve-card @(hasConflict ? "approve-linked-card" : "")" data-id="@bgu.Id"
+                data-boardgameid="@bgu.BoardGame.Id">
                 @if (hasConflict)
                 {
                     <span class="approve-linked-marker">[Linked Request #@bgu.BoardGame.Id]</span>
@@ -26,18 +27,21 @@
                 <p>Title: @bgu.BoardGame.Title</p>
                 <h3>User:</h3>
                 <p>Username: @bgu.User.Username</p>
-                <p>Request Date: @bgu.BorrowDate.ToString("dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture)</p>
-                <div class="approve-checkboxes">
-                    <label class="approve-checkbox-label">
-                        <input type="checkbox" class="approve-checkbox" /> Approve
-                    </label>
-                    <label class="deny-checkbox-label">
-                        <input type="checkbox" class="deny-checkbox" /> Deny
-                    </label>
-                </div>
+                <p>Request Date: @bgu.BorrowDate.ToString("dd/MM/yyyy HH:mm",
+                                    System.Globalization.CultureInfo.InvariantCulture)</p>
+            <div class="approve-checkboxes">
+                <label class="approve-checkbox-label">
+                    <input type="checkbox" class="approve-checkbox" /> Approve
+                </label>
+                <label class="deny-checkbox-label">
+                    <input type="checkbox" class="deny-checkbox" /> Deny
+                </label>
             </div>
-        }
+        </div>
+                }
     </div>
 </main>
 
-<script src="~/js/approveForm.js"></script>
+<script type="module" src="~/js/apiClient.js"></script>
+<script type="module" src="~/js/services.js"></script>
+<script type="module" src="~/js/approveForm.js"></script>

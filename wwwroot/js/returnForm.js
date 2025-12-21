@@ -1,4 +1,5 @@
-﻿// Function to reset all checkboxes and processed classes
+﻿import { saveReturnForm } from './services.js';
+
 function resetAllCheckboxes() {
     const approveCards = document.querySelectorAll(".return-card");
     approveCards.forEach(card => {
@@ -41,24 +42,17 @@ cards.forEach(card => {
     });
 });
 
-document.getElementById("save-changes").addEventListener("click", () => {
+document.getElementById("save-changes").addEventListener("click", async () => {
     const results = Array.from(cards).map(card => ({
         BoardGameUserId: parseInt(card.dataset.id),
         Returned: card.querySelector(".return-checkbox").checked
     }));
 
-    fetch("/Admin/SaveReturnForm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(results)
-    })
-        .then(async response => {
-            if (!response.ok) {
-                const msg = await response.text();
-                alert("Error: " + msg);
-                return;
-            }
-            window.location.reload();
-        })
-        .catch(err => alert("Network or server error: " + err.message));
+    try {
+        await saveReturnForm(results);
+        window.location.reload();
+    } catch (error) {
+        const msg = error.data || error.message || "Unknown error";
+        alert("Error: " + msg);
+    }
 });

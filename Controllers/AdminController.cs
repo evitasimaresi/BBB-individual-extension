@@ -32,23 +32,10 @@ public class AdminController : Controller
     }
 
 
-    [HttpGet("game-form")]
-    public IActionResult GameForm()
-    {
-        if (!AdminCheck()) return RedirectToAction("Index", "Home");
-
-        var tagGroups = _db.TagGroups
-            .Include(tg => tg.Tags)
-            .OrderBy(tg => tg.Name)
-            .ToList();
-
-        return View(tagGroups);
-    }
-
     [HttpPost("add-game")]
-    public async Task<ActionResult> AddGame(string gameTitle, string gameDesc, IFormFile gameCover, string gameCond, string gameLink, [FromForm] IFormCollection form)
+    public async Task<ActionResult> AddGame([FromForm] string gameTitle, [FromForm] string gameDesc, [FromForm] IFormFile gameCover, [FromForm] string gameCond, [FromForm] string gameLink, [FromForm] IFormCollection form)
     {
-        if (!AdminCheck()) return RedirectToAction("Index", "Home");
+        if (!AdminCheck()) return Unauthorized("Admin access required");
 
         string relativePath = "";
         var tagIds = new List<int>();
@@ -112,26 +99,7 @@ public class AdminController : Controller
             }
         }
 
-        return RedirectToAction("Index", "Home");
-    }
-
-    // Page to review borrow requests
-    [HttpGet("approve-form")]
-    public IActionResult ApproveForm()
-    {
-        if (!AdminCheck()) return RedirectToAction("Index", "Home");
-
-        var requests = _db.BoardGameUsers
-            .Include(r => r.User)
-            .Include(r => r.BoardGame)
-            .Where(r => r.ReturnDate == null)
-            .Where(r => r.BoardGame.StatusId == 3)
-            .OrderBy(r => r.BoardGame.Id)
-            .ThenBy(r => r.BorrowDate)
-            .ThenBy(r => r.Id)
-            .ToList();
-
-        return View(requests);
+        return Ok(new { success = true, message = "Game added successfully" });
     }
 
     [HttpPost("save-approve-form")]
@@ -234,22 +202,6 @@ public class AdminController : Controller
 
         _db.SaveChanges();
         return Ok();
-    }
-
-    [HttpGet("return-form")]
-    public IActionResult ReturnForm()
-    {
-        if (!AdminCheck()) return RedirectToAction("Index", "Home");
-
-        var borrowed = _db.BoardGameUsers
-            .Include(r => r.User)
-            .Include(r => r.BoardGame)
-            .Where(r => r.ReturnDate == null)
-            .Where(r => r.BoardGame.StatusId == 2)
-            .OrderBy(r => r.BorrowDate)
-            .ToList();
-
-        return View(borrowed);
     }
 
     [HttpPost("save-return-form")]

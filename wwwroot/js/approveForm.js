@@ -1,4 +1,5 @@
-﻿// Function to reset all checkboxes and processed classes
+﻿import { saveApproveForm } from './services.js';
+
 function resetAllCheckboxes() {
     const approveCards = document.querySelectorAll(".approve-card");
     approveCards.forEach(card => {
@@ -111,7 +112,7 @@ document.getElementById("reset-all").addEventListener("click", () => {
     });
 });
 
-document.getElementById("save-changes").addEventListener("click", () => {
+document.getElementById("save-changes").addEventListener("click", async () => {
     const decisions = Array.from(approveCards).map(card => {
         const approve = card.querySelector(".approve-checkbox").checked;
         const deny = card.querySelector(".deny-checkbox").checked;
@@ -125,20 +126,11 @@ document.getElementById("save-changes").addEventListener("click", () => {
         };
     });
 
-    fetch("/Admin/SaveApproveForm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(decisions)
-    })
-        .then(async response => {
-            if (!response.ok) {
-                const errorMessage = await response.text();
-                alert("Error: " + errorMessage);
-                return;
-            }
-            window.location.reload();
-        })
-        .catch(error => {
-            alert("Network or server error: " + error.message);
-        });
+    try {
+        await saveApproveForm(decisions);
+        window.location.reload();
+    } catch (error) {
+        const errorMessage = error.data || error.message || "Unknown error";
+        alert("Error: " + errorMessage);
+    }
 });
