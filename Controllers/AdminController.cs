@@ -3,6 +3,8 @@ using BBB.Data;
 using BBB.Models;
 using Microsoft.EntityFrameworkCore;
 
+[ApiController]
+[Route("api/[controller]")]
 public class AdminController : Controller
 {
     private readonly AppDbContext _db;
@@ -29,6 +31,8 @@ public class AdminController : Controller
         return true;
     }
 
+
+    [HttpGet("game-form")]
     public IActionResult GameForm()
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
@@ -40,15 +44,15 @@ public class AdminController : Controller
 
         return View(tagGroups);
     }
-    
-    [HttpPost]
+
+    [HttpPost("add-game")]
     public async Task<ActionResult> AddGame(string gameTitle, string gameDesc, IFormFile gameCover, string gameCond, string gameLink, [FromForm] IFormCollection form)
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
 
         string relativePath = "";
         var tagIds = new List<int>();
-    
+
         foreach (var key in form.Keys)
         {
             if (key.StartsWith("tag_"))
@@ -78,17 +82,17 @@ public class AdminController : Controller
 
             relativePath = "/Images/" + fileName;
         }
-        
+
         if (!string.IsNullOrWhiteSpace(gameTitle))
         {
-            var game = new BoardGame 
-            { 
-                Title = gameTitle, 
-                Description = gameDesc, 
+            var game = new BoardGame
+            {
+                Title = gameTitle,
+                Description = gameDesc,
                 Image = relativePath,
                 Condition = gameLink,
                 Link = gameCond,
-                StatusId = 1 
+                StatusId = 1
             };
             _db.BoardGames.Add(game);
             _db.SaveChanges();
@@ -112,6 +116,7 @@ public class AdminController : Controller
     }
 
     // Page to review borrow requests
+    [HttpGet("approve-form")]
     public IActionResult ApproveForm()
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
@@ -129,7 +134,7 @@ public class AdminController : Controller
         return View(requests);
     }
 
-    [HttpPost]
+    [HttpPost("save-approve-form")]
     public IActionResult SaveApproveForm([FromBody] List<BoardGameUserDecisionDto> decisions)
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
@@ -155,11 +160,11 @@ public class AdminController : Controller
             .ThenBy(r => r.BorrowDate)
             .ThenBy(r => r.Id)
             .ToList();
-        
+
         // Check count
         if (requests.Count != decisions.Count)
             return BadRequest($"Mismatch in number of requests and decisions: Db requests: {requests.Count} Decisions: {decisions.Count}");
-        
+
         // Validate linked entities
         var requestMap = new Dictionary<int, List<int>>();
         foreach (var r in requests)
@@ -230,7 +235,8 @@ public class AdminController : Controller
         _db.SaveChanges();
         return Ok();
     }
- 
+
+    [HttpGet("return-form")]
     public IActionResult ReturnForm()
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
@@ -246,7 +252,7 @@ public class AdminController : Controller
         return View(borrowed);
     }
 
-    [HttpPost]
+    [HttpPost("save-return-form")]
     public IActionResult SaveReturnForm([FromBody] List<ReturnDto> results)
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
@@ -275,7 +281,7 @@ public class AdminController : Controller
     }
 
     // Editing a single game
-    [HttpGet]
+    [HttpGet("get-one-game")]
     public IActionResult GetOneGame(int gameId)
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
@@ -298,7 +304,7 @@ public class AdminController : Controller
         return Json(result);
     }
 
-    [HttpPost]
+    [HttpPost("edit-game")]
     public IActionResult EditGame(int Id, string gameTitle, string gameDesc, IFormFile gameCover)
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
@@ -337,14 +343,14 @@ public class AdminController : Controller
         {
             game.Title = gameTitle;
             game.Description = gameDesc;
-            if(relativePath != "") game.Image = relativePath;
+            if (relativePath != "") game.Image = relativePath;
         }
         _db.SaveChanges();
 
         return RedirectToAction("Index", "Home");
     }
 
-    [HttpPost]
+    [HttpPost("delete-game")]
     public IActionResult DeleteGame(int Id)
     {
         if (!AdminCheck()) return RedirectToAction("Index", "Home");
