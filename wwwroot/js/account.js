@@ -2,20 +2,55 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const editToggleBtn = document.getElementById("editToggleBtn");
     const cancelEditBtn = document.getElementById("cancelEditBtn");
+    const editForm = document.getElementById("editForm");
     const editFormSection = document.getElementById("editFormSection");
+    const messageAlert = document.getElementById("messageAlert");
+    const errorAlert = document.getElementById("errorAlert");
 
-    function toggleForm(show) {
-        if (!editFormSection) return;
-        editFormSection.style.display = show ? "block" : "none";
-    }
+    editToggleBtn.addEventListener('click', () => {
+        editFormSection.style.display = "block";
+    });
+    
+    cancelEditBtn.addEventListener('click', () => {
+        editFormSection.style.display = "none";
+        messageAlert.innerHTML = '';
+        errorAlert.innerHTML= '';
+        
+    });
 
-    if (editToggleBtn) {
-        editToggleBtn.addEventListener("click", () => toggleForm(true));
-    }
+    editForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    if (cancelEditBtn) {
-        cancelEditBtn.addEventListener("click", () => toggleForm(false));
-    }
+        const formData = {
+            username: document.getElementById('Username').value,
+            email: document.getElementById('Email').value,
+            password: document.getElementById('Password').value,
+            confirmpassword: document.getElementById('ConfirmPassword').value,
+            borrowedCount: document.getElementById('borrowedCountDisplay').textContent
+        };
+
+        try {
+            const response = await fetch('/api/account', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                messageAlert.innerHTML = `<div class="alert-success">${data.message || 'Your information has been updated successfully.'}</div>`;
+                document.getElementById('usernameDisplay').textContent = formData.username;
+                editFormSection.style.display = 'none';
+            } else {
+                errorAlert.innerHTML =  `<div class="alert-danger">${data.error || 'An error occurred.'}</div>`;
+            }
+        } catch (error) {
+            errorAlert.innerHTML = `<div class="alert-danger">Error updating account: ${error.message}</div>`;
+        }
+    });
 
     document.querySelectorAll(".eye-btn").forEach(btn => {
         btn.addEventListener("click", () => {

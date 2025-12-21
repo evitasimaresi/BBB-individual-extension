@@ -21,22 +21,14 @@
         </footer>
     </section>
 
-    @if (!string.IsNullOrEmpty(Model.Message))
-    {
-        <div class="alert-success">@Model.Message</div>
-    }
+    <div id="messageAlert" class="alert-success"></div>
 
-    <section id="editFormSection" class="edit-section" data-has-error="@(!string.IsNullOrEmpty(Model.Error))"
-        style="display:none;">
+    <section id="editFormSection" class="edit-section" style="display:none;">
         <header class="borrowed-title">
             <h3>Edit User Information</h3>
         </header>
-        @if (!string.IsNullOrEmpty(Model.Error))
-        {
-            <div class="alert-danger">@Model.Error</div>
-        }
-        <form asp-controller="Account" asp-action="Account" method="post">
-            @Html.AntiForgeryToken()
+        <div id="errorAlert" class="alert-danger"></div>
+        <form id="editForm">
             <fieldset style="border: none; padding: 0;">
                 <label for="Username">Username</label>
                 <input id="Username" name="Username" type="text" value="@Model.Username" required />

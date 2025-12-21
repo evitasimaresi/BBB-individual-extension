@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
+[ApiController]
+[Route("api/[controller]")]
 public class AccountController : Controller
 {
     private readonly AppDbContext _db;
@@ -16,6 +19,7 @@ public class AccountController : Controller
         _db = context;
     }
 
+    [HttpGet("index")]
     public IActionResult Index()
     {
         var userIdStr = HttpContext.Session.GetString("UserId");
@@ -27,14 +31,14 @@ public class AccountController : Controller
         var vm = GetEditAccountModel(userId);
         if (vm == null)
         {
-            return RedirectToAction("Login", "Account");
+            return Unauthorized();
         }
 
-        return View("Account", vm);
+        return Ok(vm);
     }
 
     // POST: /Home/Account
-    [HttpPost]
+    [HttpPost("account")]
     [ValidateAntiForgeryToken]
     public IActionResult Account(EditAccountModel model)
     {
@@ -48,7 +52,7 @@ public class AccountController : Controller
         var user = _db.Users.Include(u => u.Auth).FirstOrDefault(u => u.Id == userId);
 
         if (user == null)
-            return RedirectToAction("Login", "Account");
+            return Unauthorized();
 
         // update username + email
         user.Username = model.Username.Trim();
@@ -92,13 +96,13 @@ public class AccountController : Controller
             HttpContext.Session.SetString("Username", user.Username);
         }
         var vm = GetEditAccountModel(userId);
-        if (vm == null) return View("Account", vm);
+        if (vm == null) return BadRequest();
         vm.Error = error;
         vm.Message = message;
-        return View("Account", vm);
+        return Ok(vm);
     }
 
-    [HttpGet]
+    [HttpGet("games")]
     public IActionResult GetGames()
     {
         var statusOrder = new[] { 1, 3, 2, 4 };
@@ -150,15 +154,11 @@ public class AccountController : Controller
         return Json(games);
     }
 
-    [HttpGet]
-    public IActionResult Login()
+    [HttpPost("login")]
+    public IActionResult Login([FromBody] LoginRequest request)
     {
-        return View();
-    }
-
-    [HttpPost]
-    public IActionResult Login(string username, string password)
-    {
+        string username = request.Username;
+        string password = request.Password;
 
         User? user = _db.Users.FirstOrDefault(u => u.Username == username);
         if (user == null)
@@ -177,27 +177,33 @@ public class AccountController : Controller
             {
                 HttpContext.Session.SetString("UserId", user.Id.ToString());
                 HttpContext.Session.SetString("Username", user.Username);
-                return RedirectToAction("Index", "Home");
+                return Ok(new { success = true, redirectUrl = "/" });
             }
         }
 
         return StatusCode(418, "I'm a teapot");
     }
 
-    [HttpGet]
+    public class LoginRequest
+    {
+        public required string Username { get; set; }
+        public required string Password { get; set; }
+    }
+
+    [HttpGet("logout")]
     public IActionResult Logout()
     {
         HttpContext.Session.Clear();
-        return RedirectToAction("Index", "Home");
+        return Ok();
     }
 
+    // [HttpGet("register")]
+    // public IActionResult Register()
+    // {
+    //     return Ok();
+    // }
 
-    public IActionResult Register()
-    {
-        return View();
-    }
-
-    [HttpPost]
+    [HttpPost("register")]
     public ActionResult AddUser(string userName, string userEmail, string userPassword)
     {
         var pattern = @"^[A-Za-z0-9._%+-]+@student\.sdu\.dk$";
@@ -215,9 +221,11 @@ public class AccountController : Controller
             var user = new User { Username = userName, Email = userEmail, Auth = new Auth { PasswordHash = hashBase64, Token = saltBase64 }, RoleId = 2 };
             _db.Users.Add(user);
             _db.SaveChanges();
+            return Ok();
         }
 
-        return RedirectToAction("Login", "Account");
+        return BadRequest("Invalid input");
+        // return RedirectToAction("Login", "Account");
     }
 
     public class Credentials
@@ -226,7 +234,7 @@ public class AccountController : Controller
         public required string userEmail { get; set; }
     }
 
-    [HttpPost]
+    [HttpPost("check-availability")]
     public JsonResult CheckUserAvailability([FromBody] Credentials creds)
     {
         bool usernameTaken = _db.Users.Any(u => u.Username == creds.userName);

@@ -1,22 +1,22 @@
-﻿document.querySelector('form').addEventListener('submit', async (e) => {
+﻿document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    check();
-});
-
-function check() {
-    const form = document.querySelector('form');
-    const formData = new FormData(form);
-
-    fetch('/Account/Login', {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    try {
+      const response = await fetch(`/api/account/login`, {
         method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (response.status === 418) {
-            alert("Invalid username or password");
-        }
-        else {
-            window.location.href = "/Home/Index";
-        }
-    })
-}
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        window.location.href = data.redirectUrl || '/';
+      } else {
+        alert('Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  });

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BBB</title>
 
-        <!-- Google's API for icons and fonts -->
+    <!-- Google's API for icons and fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,7 +79,7 @@
                     </svg>
                     <p class="username">Hi @userName!</p>
                 </div>
-                <p onclick="window.location.href='/Account/Logout'">Log Out</p>
+                <p id="logoutBtn">Log Out</p>
             }
         </div>
 
@@ -162,6 +162,7 @@
 
     <script src="~/js/filters.js"></script>
     <script src="~/js/sidebar.js"></script>
+    <script src="~/js/logout.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
