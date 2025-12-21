@@ -37,10 +37,9 @@ public class AccountController : Controller
         return Ok(vm);
     }
 
-    // POST: /Home/Account
-    [HttpPost("account")]
+    [HttpPut("account")]
     [ValidateAntiForgeryToken]
-    public IActionResult Account(EditAccountModel model)
+    public IActionResult UpdateAccount([FromBody] EditAccountModel model)
     {
         var userIdStr = HttpContext.Session.GetString("UserId");
         Debug.WriteLine($"{model.BorrowedCount} XD");
@@ -204,28 +203,34 @@ public class AccountController : Controller
     // }
 
     [HttpPost("register")]
-    public ActionResult AddUser(string userName, string userEmail, string userPassword)
+    public ActionResult RegisterUser([FromBody] RegisterRequest request)
     {
         var pattern = @"^[A-Za-z0-9._%+-]+@student\.sdu\.dk$";
-        bool isMatch = Regex.IsMatch(userEmail, pattern, RegexOptions.IgnoreCase);
+        bool isMatch = Regex.IsMatch(request.UserEmail, pattern, RegexOptions.IgnoreCase);
 
-        if (!string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(userEmail) && !string.IsNullOrWhiteSpace(userPassword) && isMatch)
+        if (!string.IsNullOrWhiteSpace(request.UserName) && !string.IsNullOrWhiteSpace(request.UserEmail) && !string.IsNullOrWhiteSpace(request.UserPassword) && isMatch)
         {
 
             byte[] salt = RandomNumberGenerator.GetBytes(16);
             string saltBase64 = Convert.ToBase64String(salt);
 
-            byte[] hash = PBKDF2Hasher.Hash(userPassword, salt);
+            byte[] hash = PBKDF2Hasher.Hash(request.UserPassword, salt);
             string hashBase64 = Convert.ToBase64String(hash);
 
-            var user = new User { Username = userName, Email = userEmail, Auth = new Auth { PasswordHash = hashBase64, Token = saltBase64 }, RoleId = 2 };
+            var user = new User { Username = request.UserName, Email = request.UserEmail, Auth = new Auth { PasswordHash = hashBase64, Token = saltBase64 }, RoleId = 2 };
             _db.Users.Add(user);
             _db.SaveChanges();
             return Ok();
         }
 
         return BadRequest("Invalid input");
-        // return RedirectToAction("Login", "Account");
+    }
+
+    public class RegisterRequest
+    {
+        public required string UserName { get; set; }
+        public required string UserEmail { get; set; }
+        public required string UserPassword { get; set; }
     }
 
     public class Credentials
