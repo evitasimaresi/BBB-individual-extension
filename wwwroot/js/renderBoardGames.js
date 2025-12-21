@@ -1,10 +1,11 @@
+import { getAllGames } from './services.js';
+
 // Variables
 let gamesData = [];
 let filterMap = { tagFilters: [], statusFilters: [], queryFilters: [], queryActive: false };
 
 // Fetch A list of games from the server, render them and attach event listeners
-fetch('/Home/GetGames')
-    .then(response => response.json())
+getAllGames()
     .then(data => {
         gamesData = data; // Store fetched games
         renderGames(gamesData); // Initial render

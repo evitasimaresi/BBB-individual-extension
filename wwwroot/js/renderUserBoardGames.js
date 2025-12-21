@@ -1,9 +1,10 @@
+import { getUserGames } from './services.js';
+
 let gamesData = [];
 let filterMap = new Map();
 
 // Fetch A list of games from the server, render them and attach event listeners
-fetch('/Account/GetGames')
-    .then(response => response.json())
+getUserGames()
     .then(data => {
         gamesData = data; // Store fetched games
         renderGames(gamesData); // Initial render

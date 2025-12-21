@@ -1,3 +1,5 @@
+import { updateUserProfile } from './services.js';
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const editToggleBtn = document.getElementById("editToggleBtn");
@@ -10,45 +12,34 @@ document.addEventListener("DOMContentLoaded", function () {
     editToggleBtn.addEventListener('click', () => {
         editFormSection.style.display = "block";
     });
-    
+
     cancelEditBtn.addEventListener('click', () => {
         editFormSection.style.display = "none";
         messageAlert.innerHTML = '';
-        errorAlert.innerHTML= '';
-        
+        errorAlert.innerHTML = '';
+
     });
 
     editForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        const borrowedCountElement = document.getElementById('borrowedCountDisplay');
         const formData = {
             username: document.getElementById('Username').value,
             email: document.getElementById('Email').value,
-            password: document.getElementById('Password').value,
-            confirmpassword: document.getElementById('ConfirmPassword').value,
-            borrowedCount: document.getElementById('borrowedCountDisplay').textContent
+            newPassword: document.getElementById('NewPassword').value,
+            confirmPassword: document.getElementById('ConfirmPassword').value,
+            borrowedCount: borrowedCountElement ? borrowedCountElement.textContent : '0'
         };
 
         try {
-            const response = await fetch('/api/account', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                messageAlert.innerHTML = `<div class="alert-success">${data.message || 'Your information has been updated successfully.'}</div>`;
-                document.getElementById('usernameDisplay').textContent = formData.username;
-                editFormSection.style.display = 'none';
-            } else {
-                errorAlert.innerHTML =  `<div class="alert-danger">${data.error || 'An error occurred.'}</div>`;
-            }
+            const data = await updateUserProfile(formData);
+            messageAlert.innerHTML = `<div class="alert-success">${data.message || 'Your information has been updated successfully.'}</div>`;
+            document.getElementById('usernameDisplay').textContent = formData.username;
+            editFormSection.style.display = 'none';
         } catch (error) {
-            errorAlert.innerHTML = `<div class="alert-danger">Error updating account: ${error.message}</div>`;
+            const errorMessage = error.data?.error || error.data || 'An error occurred.';
+            errorAlert.innerHTML = `<div class="alert-danger">${errorMessage}</div>`;
         }
     });
 
@@ -83,10 +74,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (isLong && hasNumber) {
-            ruleMsg.style.color = "#10b981"; 
+            ruleMsg.style.color = "#10b981";
             ruleMsg.textContent = "✔ Password meets the requirements.";
         } else {
-            ruleMsg.style.color = "#ef4444"; 
+            ruleMsg.style.color = "#ef4444";
             ruleMsg.textContent =
                 "✘ Password must be at least 8 characters long and contain at least one number.";
         }

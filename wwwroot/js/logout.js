@@ -1,16 +1,14 @@
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-    try {
-        const response = await fetch('/api/account/logout', {
-            method: 'GET'
-        });
+import { logoutUser } from './services.js';
 
-        if (response.ok) {
+const logoutBtn = document.getElementById('logoutBtn');
+
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await logoutUser();
             window.location.href = '/';
-        } else {
-            console.error('Logout failed');
+        } catch (error) {
+            console.error('Logout error:', error);
         }
-    } catch (error) {
-        console.error('Logout error:', error);
-    }
-
-});
+    });
+}

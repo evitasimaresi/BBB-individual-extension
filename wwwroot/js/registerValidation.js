@@ -1,5 +1,10 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+﻿import { checkUserAvailability, registerUser, loginUser } from './services.js';
+
+document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('form');
+
+    if (!form) return; // Exit if no form on this page
+
     const usernameInput = form.querySelector('input[name="userName"]');
     const emailInput = form.querySelector('input[name="userEmail"]');
     const passwordInput = form.querySelector('input[name="userPassword"]');
@@ -35,30 +40,14 @@
             if (!isEmailValid) message += '- Email must be a valid @student.sdu.dk address\n';
             if (!isPasswordValid) message += '- Password must be at least 8 characters and contain at least one number\n';
             alert(message);
-            return; 
+            return;
         }
-
-        const data = {
-            userName: username,
-            userEmail: email
-        };
 
         // --- Server-side validation ---
         try {
             console.log("Checking username/email availability...");
 
-            const response = await fetch('/Account/CheckUserAvailability', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            if (!response.ok) {
-                alert('Server error while checking availability.');
-                return;
-            }
-
-            const result = await response.json();
+            const result = await checkUserAvailability(username, email);
 
             if (result.usernameTaken || result.emailTaken) {
                 message = 'Please fix the following:\n';
@@ -68,21 +57,28 @@
                 return;
             }
 
-            console.log("1");
-            // --- If everything passes, submit form normally ---
-            form.submit();
-            //dialog.showModal();
-            console.log("2");
+            // --- If validation passes, register the user ---
+            await registerUser(username, email, password);
+
+            // Auto-login after successful registration
+            await loginUser(username, password);
+
+            // Redirect to home page
+            window.location.href = "/";
 
         } catch (error) {
-            console.error('Error checking availability:', error);
-            alert('An error occurred while checking username/email availability.');
+            console.error('Error during registration:', error);
+            alert('An error occurred during registration. Please try again.');
         }
+    });
 
+    if (closeButton) {
         closeButton.addEventListener("click", () => {
-            dialog.close();
+            if (dialog) {
+                dialog.close();
+            }
             readyToSubmit = true;
             form.requestSubmit();
         });
-    });
+    }
 });
