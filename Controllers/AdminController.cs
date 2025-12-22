@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using BBB.Data;
 using BBB.Models;
 using Microsoft.EntityFrameworkCore;
+using BBB.Filters;
 
 [ApiController]
 [Route("api/admin")]
+[RequireRole(UserRole.Admin)]
 public class AdminController : Controller
 {
     private readonly AppDbContext _db;

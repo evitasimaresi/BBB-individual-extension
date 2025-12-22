@@ -1,4 +1,5 @@
 using BBB.Data;
+using BBB.Filters;
 using BBB.Models;
 using BBB.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -102,6 +103,13 @@ public class AuthController : Controller
         }
 
         return BadRequest("Invalid input");
+    }
+
+    [RequireRole(UserRole.Admin)]
+    [HttpGet("admin-only")]
+    public IActionResult AdminOnly()
+    {
+        return Ok("Admin access granted");
     }
 
     public class LoginRequest
