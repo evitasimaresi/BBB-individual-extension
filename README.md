@@ -1,8 +1,6 @@
 # BBB
-### Group project’s topic:
-Board-games library and management system
-
 ### Team 20
+**Group project’s topic:** Board-games library and management system  
 
 ## Individual Extension
 
