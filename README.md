@@ -1,6 +1,7 @@
 # BBB
-### Team 20
 **Group project’s topic:** Board-games library and management system  
+### Team 20
+### Student: Simaresi Paraskevi-Dimitra
 
 ## Individual Extension
 
