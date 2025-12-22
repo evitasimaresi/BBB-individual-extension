@@ -19,8 +19,8 @@ public class AccountController : Controller
         _db = context;
     }
 
-    [HttpGet("index")]
-    public IActionResult Index()
+    [HttpGet]
+    public IActionResult GetProfile()
     {
         var userIdStr = HttpContext.Session.GetString("UserId");
         int userId;
@@ -37,8 +37,8 @@ public class AccountController : Controller
         return Ok(vm);
     }
 
-    [HttpPut("account")]
-    public IActionResult UpdateAccount([FromBody] EditAccountModel model)
+    [HttpPut]
+    public IActionResult UpdateProfile([FromBody] EditAccountModel model)
     {
         var userIdStr = HttpContext.Session.GetString("UserId");
         Debug.WriteLine($"{model.BorrowedCount} XD");

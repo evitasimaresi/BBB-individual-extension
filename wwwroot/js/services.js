@@ -1,6 +1,6 @@
 //  API Services - Individual exported functions for each API call
 
-import { get, post, put, del } from './apiClient.js';
+import { get, post, put, del, patch } from './apiClient.js';
 
 // Auth
 export async function loginUser(username, password) {
@@ -17,11 +17,11 @@ export async function registerUser(userName, userEmail, userPassword) {
 
 // Account
 export async function getUserProfile() {
-    return get('/account/index');
+    return get('/account');
 }
 
 export async function updateUserProfile(profileData) {
-    return put('/account/account', profileData);
+    return put('/account', profileData);
 }
 
 export async function getUserGames() {
@@ -35,11 +35,11 @@ export async function checkUserAvailability(userName, userEmail) {
 
 // Admin - Borrow Requests
 export async function saveApproveForm(decisions) {
-    return put('/admin/games/borrow-requests/approve', decisions);
+    return patch('/admin/borrow-requests', decisions);
 }
 
 export async function saveReturnForm(results) {
-    return put('/admin/games/borrow-requests/return', results);
+    return patch('/admin/returns', results);
 }
 
 export async function addGame(formData) {

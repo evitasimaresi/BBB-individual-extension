@@ -4,7 +4,7 @@ using BBB.Models;
 using Microsoft.EntityFrameworkCore;
 
 [ApiController]
-[Route("api/admin/games")]
+[Route("api/admin")]
 public class AdminController : Controller
 {
     private readonly AppDbContext _db;
@@ -17,7 +17,7 @@ public class AdminController : Controller
 
 
 
-    [HttpPost()]
+    [HttpPost("games")]
     [Consumes("multipart/form-data")]
     public async Task<ActionResult> CreateGame([FromForm] CreateGameDto dto, [FromForm] IFormCollection form)
     {
@@ -92,8 +92,8 @@ public class AdminController : Controller
         return BadRequest("Game title is required");
     }
 
-    [HttpPut("borrow-requests/approve")]
-    public IActionResult ApproveRequests([FromBody] List<BoardGameUserDecisionDto> decisions)
+    [HttpPatch("borrow-requests")]
+    public IActionResult UpdateBorrowRequests([FromBody] List<BoardGameUserDecisionDto> decisions)
     {
         if (!IsAdminCheck()) return Forbid();
 
@@ -194,8 +194,8 @@ public class AdminController : Controller
         return Ok();
     }
 
-    [HttpPut("borrow-requests/return")]
-    public IActionResult ReturnGames([FromBody] List<ReturnDto> results)
+    [HttpPatch("returns")]
+    public IActionResult ProcessReturns([FromBody] List<ReturnDto> results)
     {
         if (!IsAdminCheck()) return Forbid();
 
@@ -223,7 +223,7 @@ public class AdminController : Controller
     }
 
     // Get a single game
-    [HttpGet("{id}")]
+    [HttpGet("games/{id}")]
     public IActionResult GetGame(int id)
     {
         if (!IsAdminCheck()) return Forbid();
@@ -246,7 +246,7 @@ public class AdminController : Controller
         return Json(result);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("games/{id}")]
     [Consumes("multipart/form-data")]
     public IActionResult UpdateGame(int id, [FromForm] CreateGameDto dto)
     {
@@ -282,7 +282,7 @@ public class AdminController : Controller
         return Ok(new { success = true, message = "Game updated successfully" });
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("games/{id}")]
     public IActionResult DeleteGame(int id)
     {
         if (!IsAdminCheck()) return Forbid();

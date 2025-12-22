@@ -127,3 +127,6 @@ export const put = (endpoint, body, options = {}) => {
 
 export const del = (endpoint, options = {}) =>
     request(endpoint, { ...options, method: 'DELETE' });
+
+export const patch = (endpoint, body, options = {}) =>
+    request(endpoint, { ...options, method: 'PATCH', body: JSON.stringify(body) });
