@@ -21,17 +21,17 @@
         </footer>
     </section>
 
-    <div id="messageAlert" class="alert-success"></div>
 
     <section id="editFormSection" class="edit-section" style="display:none;">
         <header class="borrowed-title">
             <h3>Edit User Information</h3>
         </header>
+        <div id="successAlert" class="alert-success"></div>
         <div id="errorAlert" class="alert-danger"></div>
         <form id="editForm">
             <fieldset style="border: none; padding: 0;">
                 <label for="Username">Username</label>
-                <input id="Username" name="Username" type="text" value="@Model.Username" required />
+                <input id="Username" name="Username" type="text" placeholder="New Username" required />
 
                 <label for="Email">Email</label>
                 <input id="Email" name="Email" type="email" value="@Model.Email" disabled

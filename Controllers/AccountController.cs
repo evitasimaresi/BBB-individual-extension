@@ -38,10 +38,9 @@ public class AccountController : Controller
     }
 
     [HttpPut]
-    public IActionResult UpdateProfile([FromBody] EditAccountModel model)
+    public IActionResult UpdateProfile([FromBody] UpdateProfileDto model)
     {
         var userIdStr = HttpContext.Session.GetString("UserId");
-        Debug.WriteLine($"{model.BorrowedCount} XD");
         int userId;
 
         if (!int.TryParse(userIdStr, out userId))
@@ -52,7 +51,6 @@ public class AccountController : Controller
         if (user == null)
             return Unauthorized();
 
-        // update username + email
         user.Username = model.Username.Trim();
         string? error = null;
         string? message = null;
@@ -75,7 +73,6 @@ public class AccountController : Controller
             }
             else
             {
-                // update hashed password + salt
                 byte[] salt = RandomNumberGenerator.GetBytes(16);
                 string saltBase64 = Convert.ToBase64String(salt);
 
@@ -92,12 +89,12 @@ public class AccountController : Controller
             _db.SaveChanges();
             message = "Your information has been updated successfully.";
             HttpContext.Session.SetString("Username", user.Username);
+            return Ok();
         }
-        var vm = GetEditAccountModel(userId);
-        if (vm == null) return BadRequest();
-        vm.Error = error;
-        vm.Message = message;
-        return Ok(vm);
+        else
+        {
+            return BadRequest(new { error });
+        }
     }
 
     [HttpGet("games")]
@@ -110,7 +107,7 @@ public class AccountController : Controller
 
         if (string.IsNullOrEmpty(userId))
         {
-            return Unauthorized(); // User not logged in
+            return Unauthorized();
         }
         int userID;
 

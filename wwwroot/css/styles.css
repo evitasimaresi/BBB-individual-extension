@@ -97,55 +97,55 @@ footer {
 
 /* Search Bar */
 .searchbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 12px;
-    margin: var(--margin-lg);
-    background-color: var(--white);
-    border-radius: var(--border-radius-2x1);
-    box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  margin: var(--margin-lg);
+  background-color: var(--white);
+  border-radius: var(--border-radius-2x1);
+  box-sizing: border-box;
 }
 
 .searchbar input[type="text"] {
-    border: none;
-    font-size: var(--font-size-base);
-    width: 100%;
-    padding: 6px 10px;
-    outline: none;
-    box-sizing: border-box;
+  border: none;
+  font-size: var(--font-size-base);
+  width: 100%;
+  padding: 6px 10px;
+  outline: none;
+  box-sizing: border-box;
 }
 
 .searchbar input[type="text"]:focus {
-    border-color: var(--orange-400);
+  border-color: var(--orange-400);
 }
 
 .searchbar button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 .searchbar svg {
-    width: 24px;
-    height: 24px;
-    fill: var(--blue-400);
-    transition: fill 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 24px;
+  height: 24px;
+  fill: var(--blue-400);
+  transition: fill 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .searchbar button:hover svg {
-    fill: var(--blue-custom-light);
+  fill: var(--blue-custom-light);
 }
 
 #search-clear {
-    display: none;
+  display: none;
 }
 
 .menu-icon {
@@ -694,57 +694,57 @@ footer {
 
 /* Account */
 .edit-section label {
-    display: block;
-    margin-top: 10px;
-    font-weight: 600;
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
 }
 
 .edit-section input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-bottom: 8px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 8px;
 }
 
 .edit-section .password-wrapper {
-    position: relative;
+  position: relative;
 }
 
 .edit-section .eye-btn {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
 }
 
 .edit-section .alert-danger {
-    background: #441a1a;
-    color: #ffb3b3;
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin-bottom: 12px;
+  background: #441a1a;
+  color: #ffb3b3;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
 }
 
 .edit-section .alert-success {
-    background: #1c3d27;
-    color: #a7f3d0;
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    margin-left: var(--padding-md);
-    margin-right: var(--padding-md);
+  background: #1c3d27;
+  color: #a7f3d0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  margin-left: var(--padding-md);
+  margin-right: var(--padding-md);
 }
 
 .edit-section .form-actions {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 20px;
-    background: none;
-    margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+  background: none;
+  margin-top: 20px;
 }

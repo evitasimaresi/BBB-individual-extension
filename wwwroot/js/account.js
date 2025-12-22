@@ -6,40 +6,57 @@ document.addEventListener("DOMContentLoaded", function () {
     const cancelEditBtn = document.getElementById("cancelEditBtn");
     const editForm = document.getElementById("editForm");
     const editFormSection = document.getElementById("editFormSection");
-    const messageAlert = document.getElementById("messageAlert");
+    const successAlert = document.getElementById("successAlert");
     const errorAlert = document.getElementById("errorAlert");
 
     editToggleBtn.addEventListener('click', () => {
         editFormSection.style.display = "block";
+        errorAlert.innerHTML = '';
+        errorAlert.style.display = 'none';
+        successAlert.innerHTML = '';
+        successAlert.style.display = 'none';
     });
 
     cancelEditBtn.addEventListener('click', () => {
         editFormSection.style.display = "none";
-        messageAlert.innerHTML = '';
         errorAlert.innerHTML = '';
+        errorAlert.style.display = 'none';
+        successAlert.innerHTML = '';
+        successAlert.style.display = 'none';
 
     });
 
     editForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const borrowedCountElement = document.getElementById('borrowedCountDisplay');
+        // const borrowedCountElement = document.getElementById('borrowedCountDisplay');
         const formData = {
             username: document.getElementById('Username').value,
-            email: document.getElementById('Email').value,
+            // email: document.getElementById('Email').value,
             newPassword: document.getElementById('NewPassword').value,
             confirmPassword: document.getElementById('ConfirmPassword').value,
-            borrowedCount: borrowedCountElement ? borrowedCountElement.textContent : '0'
+            // borrowedCount: borrowedCountElement ? borrowedCountElement.textContent : '0'
         };
 
         try {
             const data = await updateUserProfile(formData);
-            messageAlert.innerHTML = `<div class="alert-success">${data.message || 'Your information has been updated successfully.'}</div>`;
-            document.getElementById('usernameDisplay').textContent = formData.username;
-            editFormSection.style.display = 'none';
+
+            successAlert.innerHTML = `<div class="alert-success">${data.message || 'Your information has been updated successfully.'}</div>`;
+            successAlert.style.display = 'block';
+
+            setTimeout(() => {
+                // document.getElementById('usernameDisplay').textContent = formData.username;
+                successAlert.innerHTML = '';
+                successAlert.style.display = 'none';
+            }, 4000);
         } catch (error) {
             const errorMessage = error.data?.error || error.data || 'An error occurred.';
             errorAlert.innerHTML = `<div class="alert-danger">${errorMessage}</div>`;
+            errorAlert.style.display = 'block';
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+                errorAlert.innerHTML = '';
+            }, 4000);
         }
     });
 
@@ -58,7 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleForm(true);
     }
 
-    // Password check
     const newPassInput = document.getElementById("NewPassword");
     const ruleMsg = document.getElementById("passwordRuleMsg");
 

@@ -1,4 +1,4 @@
-//  API Services - Individual exported functions for each API call
+//  API Services - exportable functions for API call
 
 import { get, post, put, del, patch } from './apiClient.js';
 
@@ -33,7 +33,7 @@ export async function checkUserAvailability(userName, userEmail) {
 }
 
 
-// Admin - Borrow Requests
+// Admin
 export async function saveApproveForm(decisions) {
     return patch('/admin/borrow-requests', decisions);
 }
@@ -58,9 +58,14 @@ export async function deleteGame(id) {
     return del(`/admin/games/${id}`);
 }
 
-// No-Api calls
-export async function getAllGames() {
-    return get('/Home/GetGames');
+// Games
+export async function getAllGames(searchQuery = null) {
+    const url = searchQuery ? `/games?search=${encodeURIComponent(searchQuery)}` : '/games';
+    return get(url);
+}
+
+export async function borrowGame(gameId) {
+    return post('/games/borrow-requests', { gameId });
 }
 
 

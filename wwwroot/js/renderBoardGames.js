@@ -1,4 +1,4 @@
-import { getAllGames, getOneGame, editGame, deleteGame } from './services.js';
+import { getAllGames, getOneGame, editGame, deleteGame, borrowGame as borrowGameAPI } from './services.js';
 
 // Variables
 let gamesData = [];
@@ -25,17 +25,14 @@ function renderGames(games) {
     noGamesLi.innerHTML = '<span class="material-symbols-outlined">search_off</span> No games found matching your filters';
     list.appendChild(noGamesLi);
 
-    // Render All games
     games.forEach(game => {
         const li = document.createElement('li');
         li.className = 'card';
         li.dataset.gameId = game.id;
 
-        // Determine button text and state based on statusId
         let borrowText = 'Borrow';
         let borrowDisabled = false;
 
-        // Populate tags
         const tagsHTML = game.tags && game.tags.length > 0
             ? game.tags.map(tag => `<span class="boxes">${tag.name}</span>`).join('')
             : '<span class="boxes">No tags</span>';
@@ -86,7 +83,6 @@ function getActiveFilters() {
     const tagFilters = new Map();
     const statusFilters = new Set();
 
-    // Get tag filters (those with data-group attribute)
     document.querySelectorAll('.filters-form input[type="checkbox"]:checked[data-group]').forEach(cb => {
         const tagId = Number(cb.value);
         const groupId = Number(cb.dataset.group);
@@ -97,12 +93,10 @@ function getActiveFilters() {
         tagFilters.get(groupId).add(tagId);
     });
 
-    // Get status filters (those with data-status attribute)
     document.querySelectorAll('.filters-form input[type="checkbox"]:checked[data-status]').forEach(cb => {
         statusFilters.add(Number(cb.value));
     });
 
-    // Persist values in filterMap
     const queryFilters = filterMap.queryFilters;
     const queryActive = filterMap.queryActive;
 
@@ -110,17 +104,14 @@ function getActiveFilters() {
 }
 
 function gameMatchesFilters(game, filters) {
-    // Check query filter
     if (filters.queryActive && !filters.queryFilters.includes(game.id)) {
         return false;
     }
 
-    // Check status filter
     if (filters.statusFilters.size > 0 && !filters.statusFilters.has(game.statusId)) {
         return false;
     }
 
-    // Check tag filters (AND between groups, OR within group)
     if (filters.tagFilters.size === 0) return true;
 
     for (const [groupId, selectedTagIds] of filters.tagFilters.entries()) {
@@ -134,7 +125,6 @@ function gameMatchesFilters(game, filters) {
     return true;
 }
 
-// Filter Rendered Games
 function applyFilters(filters) {
     const cards = document.querySelectorAll('.scrolloverflow .card');
     let listEmpty = true;
@@ -152,7 +142,6 @@ function applyFilters(filters) {
         }
     });
 
-    // Show or hide the "no games found" message
     const noGamesLi = document.querySelector('.scrolloverflow .no-games-card');
     if (noGamesLi) {
         if (listEmpty) {
@@ -163,7 +152,6 @@ function applyFilters(filters) {
     }
 }
 
-// Attach Event Listeners to Card Buttons and Filters
 function attachGameButtons() {
     document.querySelectorAll('.borrow-button').forEach(button => {
         button.addEventListener('click', function () {
@@ -188,35 +176,25 @@ function attachGameButtons() {
 }
 
 function borrowGame(gameId, buttonElement) {
-    fetch('/Home/BorrowGame', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(gameId)
-    })
-        .then(async response => {
-            if (response.ok) {
-                buttonElement.textContent = 'Requested';
-            } else {
-                const errorText = await response.text();
-                if (response.status === 401) {
-                    alert('Please log in to borrow games.');
-                } else if (response.status === 409) {
-                    alert('This game is already borrowed or unavailable.');
-                } else if (response.status === 419) {
-                    alert('You have requested/borrowed too many games');
-                } else if (response.status === 420) {
-                    alert('Already requested/Borrowed');
-                } else {
-                    alert('Failed to borrow game: ' + errorText);
-                }
-            }
+    borrowGameAPI(gameId)
+        .then(() => {
+            buttonElement.textContent = 'Requested';
         })
-        .catch(error => console.error('Error borrowing game:', error));
+        .catch(error => {
+            if (error.status === 401) {
+                alert('Please log in to borrow games.');
+            } else if (error.status === 409) {
+                alert('This game is already borrowed or unavailable.');
+            } else if (error.status === 419) {
+                alert('You have requested/borrowed too many games');
+            } else if (error.status === 420) {
+                alert('Already requested/Borrowed');
+            } else {
+                alert('Failed to borrow game: ' + (error.message || 'Unknown error'));
+            }
+        });
 }
 
-// Edit Game Modal
 function openModal(gameId) {
     getOneGame(gameId)
         .then(data => {
@@ -232,7 +210,6 @@ function openModal(gameId) {
         .catch(error => console.error('Error fetching game:', error));
 }
 
-// Attach Modal listeners
 function attachModalListeners() {
     document.getElementById('edit-game-form').addEventListener('submit', function (e) {
         e.preventDefault();
@@ -258,7 +235,6 @@ function attachModalListeners() {
     });
 }
 
-// Attach Search Bar listener
 const searchButton = document.getElementById('game-search-form');
 if (searchButton) {
     searchButton.addEventListener('submit', function (e) {
@@ -273,11 +249,10 @@ if (searchButton) {
             return;
         }
 
-        fetch(`/Home/SearchGames?query=${encodeURIComponent(query)}`, { method: 'GET' })
-            .then(response => response.json())
+        getAllGames(query)
             .then(data => {
                 filterMap.queryActive = true;
-                filterMap.queryFilters = data;
+                filterMap.queryFilters = data.map(g => g.id);
                 filterMap = getActiveFilters();
                 applyFilters(filterMap);
             })
@@ -285,7 +260,6 @@ if (searchButton) {
     });
 }
 
-// Attach Search Clear Button listener
 const searchInput = document.querySelector('#game-search-form input[name="query"]');
 const searchClearButton = document.getElementById('search-clear');
 if (searchClearButton && searchInput) {
