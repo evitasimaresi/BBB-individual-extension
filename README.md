@@ -28,6 +28,10 @@ dotnet run
 dotnet watch run
 ```
 
+   The API will be available at:
+   - HTTP: `http://localhost:5164`
+   - Swagger: `http://localhost:5164/swagger`
+
 ## Users credentials
 
 You are welcome to register a new user.  
