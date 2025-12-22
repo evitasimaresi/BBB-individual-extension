@@ -53,6 +53,33 @@ public class AuthController : Controller
         return Ok();
     }
 
+    [HttpGet("me")]
+    public IActionResult GetMe()
+    {
+        var userIdString = HttpContext.Session.GetString("UserId");
+        if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+        {
+            return StatusCode(418, "I'm a teapot");
+        }
+
+        var user = _db.Users.FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+        {
+            return StatusCode(418, "I'm a teapot");
+        }
+
+        string? roleName = user.Role?.Name;
+
+        return Ok(new
+        {
+            id = user.Id,
+            username = user.Username,
+            email = user.Email,
+            roleId = user.RoleId,
+            roleName = roleName
+        });
+    }
+
     [HttpPost("register")]
     public ActionResult Register([FromBody] RegisterRequest request)
     {
