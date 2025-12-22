@@ -2,6 +2,7 @@
 
 import { get, post, put, del } from './apiClient.js';
 
+// Auth
 export async function loginUser(username, password) {
     return post('/auth/login', { username, password });
 }
@@ -14,6 +15,7 @@ export async function registerUser(userName, userEmail, userPassword) {
     return post('/auth/register', { userName, userEmail, userPassword });
 }
 
+// Account
 export async function getUserProfile() {
     return get('/account/index');
 }
@@ -30,30 +32,33 @@ export async function checkUserAvailability(userName, userEmail) {
     return post('/account/check-availability', { userName, userEmail });
 }
 
-export async function saveApproveForm(decisions) {
-    return post('/admin/save-approve-form', decisions);
-}
 
-export async function addGame(formData) {
-    return post('/admin/add-game', formData);
+// Admin - Borrow Requests
+export async function saveApproveForm(decisions) {
+    return put('/admin/games/borrow-requests/approve', decisions);
 }
 
 export async function saveReturnForm(results) {
-    return post('/admin/save-return-form', results);
+    return put('/admin/games/borrow-requests/return', results);
+}
+
+export async function addGame(formData) {
+    return post('/admin/games', formData);
 }
 
 export async function getOneGame(gameId) {
-    return get(`/admin/get-one-game?gameId=${gameId}`);
+    return get(`/admin/games/${gameId}`);
 }
 
-export async function editGame(formData) {
-    return post('/admin/edit-game', formData);
+export async function editGame(gameId, formData) {
+    return put(`/admin/games/${gameId}`, formData);
 }
 
 export async function deleteGame(id) {
-    return post('/admin/delete-game', { Id: id });
+    return del(`/admin/games/${id}`);
 }
 
+// No-Api calls
 export async function getAllGames() {
     return get('/Home/GetGames');
 }

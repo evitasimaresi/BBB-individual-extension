@@ -4,7 +4,7 @@ using BBB.Models;
 using Microsoft.EntityFrameworkCore;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/admin/games")]
 public class AdminController : Controller
 {
     private readonly AppDbContext _db;
@@ -14,28 +14,14 @@ public class AdminController : Controller
         _db = db;
     }
 
-    private bool AdminCheck()
+
+
+
+    [HttpPost()]
+    [Consumes("multipart/form-data")]
+    public async Task<ActionResult> CreateGame([FromForm] CreateGameDto dto, [FromForm] IFormCollection form)
     {
-        var userId = HttpContext.Session.GetString("UserId");
-        if (!int.TryParse(userId, out var userID))
-            return false;
-
-        var user = _db.Users
-            .Where(u => u.Id == userID)
-            .Select(u => new { u.Role.Name })
-            .FirstOrDefault();
-
-        if (user == null || user.Name != "admin")
-            return false;
-
-        return true;
-    }
-
-
-    [HttpPost("add-game")]
-    public async Task<ActionResult> AddGame([FromForm] string gameTitle, [FromForm] string gameDesc, [FromForm] IFormFile gameCover, [FromForm] string gameCond, [FromForm] string gameLink, [FromForm] IFormCollection form)
-    {
-        if (!AdminCheck()) return Unauthorized("Admin access required");
+        if (!IsAdminCheck()) return Forbid();
 
         string relativePath = "";
         var tagIds = new List<int>();
@@ -54,9 +40,9 @@ public class AdminController : Controller
 
         Console.WriteLine($"Parsed tag IDs: {string.Join(", ", tagIds)}");
 
-        if (gameCover != null && gameCover.Length > 0)
+        if (dto.GameCover != null && dto.GameCover.Length > 0)
         {
-            string fileName = Guid.NewGuid() + Path.GetExtension(gameCover.FileName);
+            string fileName = Guid.NewGuid() + Path.GetExtension(dto.GameCover.FileName);
 
             string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
             Directory.CreateDirectory(folderPath);
@@ -64,21 +50,23 @@ public class AdminController : Controller
             string savePath = Path.Combine(folderPath, fileName);
             using (var stream = new FileStream(savePath, FileMode.Create))
             {
-                await gameCover.CopyToAsync(stream);
+                await dto.GameCover.CopyToAsync(stream);
             }
 
             relativePath = "/Images/" + fileName;
         }
 
-        if (!string.IsNullOrWhiteSpace(gameTitle))
+        BoardGame game = null;
+
+        if (!string.IsNullOrWhiteSpace(dto.GameTitle))
         {
-            var game = new BoardGame
+            game = new BoardGame
             {
-                Title = gameTitle,
-                Description = gameDesc,
+                Title = dto.GameTitle,
+                Description = dto.GameDesc,
                 Image = relativePath,
-                Condition = gameLink,
-                Link = gameCond,
+                Condition = dto.GameLink,
+                Link = dto.GameCond,
                 StatusId = 1
             };
             _db.BoardGames.Add(game);
@@ -97,15 +85,17 @@ public class AdminController : Controller
                 }
                 _db.SaveChanges();
             }
+
+            return CreatedAtAction(nameof(GetGame), new { id = game.Id }, new { success = true, message = "Game added successfully", id = game.Id });
         }
 
-        return Ok(new { success = true, message = "Game added successfully" });
+        return BadRequest("Game title is required");
     }
 
-    [HttpPost("save-approve-form")]
-    public IActionResult SaveApproveForm([FromBody] List<BoardGameUserDecisionDto> decisions)
+    [HttpPut("borrow-requests/approve")]
+    public IActionResult ApproveRequests([FromBody] List<BoardGameUserDecisionDto> decisions)
     {
-        if (!AdminCheck()) return RedirectToAction("Index", "Home");
+        if (!IsAdminCheck()) return Forbid();
 
         if (decisions == null || !decisions.Any())
             return BadRequest("No decisions received.");
@@ -204,10 +194,10 @@ public class AdminController : Controller
         return Ok();
     }
 
-    [HttpPost("save-return-form")]
-    public IActionResult SaveReturnForm([FromBody] List<ReturnDto> results)
+    [HttpPut("borrow-requests/return")]
+    public IActionResult ReturnGames([FromBody] List<ReturnDto> results)
     {
-        if (!AdminCheck()) return RedirectToAction("Index", "Home");
+        if (!IsAdminCheck()) return Forbid();
 
         if (results == null || !results.Any())
             return BadRequest("No data received.");
@@ -232,16 +222,16 @@ public class AdminController : Controller
         return Ok();
     }
 
-    // Editing a single game
-    [HttpGet("get-one-game")]
-    public IActionResult GetOneGame(int gameId)
+    // Get a single game
+    [HttpGet("{id}")]
+    public IActionResult GetGame(int id)
     {
-        if (!AdminCheck()) return RedirectToAction("Index", "Home");
+        if (!IsAdminCheck()) return Forbid();
 
-        BoardGame? oneGame = _db.BoardGames.FirstOrDefault(g => g.Id == gameId);
+        BoardGame? oneGame = _db.BoardGames.FirstOrDefault(g => g.Id == id);
 
         if (oneGame == null)
-            return Json(null);
+            return NotFound();
 
         BoardGame result = new BoardGame
         {
@@ -256,27 +246,16 @@ public class AdminController : Controller
         return Json(result);
     }
 
-    [HttpPost("edit-game")]
-    public IActionResult EditGame(int Id, string gameTitle, string gameDesc, IFormFile gameCover)
+    [HttpPut("{id}")]
+    [Consumes("multipart/form-data")]
+    public IActionResult UpdateGame(int id, [FromForm] CreateGameDto dto)
     {
-        if (!AdminCheck()) return RedirectToAction("Index", "Home");
-
-        var userId = HttpContext.Session.GetString("UserId");
-        if (!int.TryParse(userId, out var userID))
-            return RedirectToAction("Index", "Home");
-
-        var user = _db.Users
-            .Where(u => u.Id == userID)
-            .Select(u => new { u.Role.Name })
-            .FirstOrDefault();
-
-        if (user == null || user.Name != "admin")
-            return RedirectToAction("Index", "Home");
+        if (!IsAdminCheck()) return Forbid();
         string relativePath = "";
 
-        if (gameCover != null && gameCover.Length > 0)
+        if (dto.GameCover != null && dto.GameCover.Length > 0)
         {
-            string fileName = Guid.NewGuid() + Path.GetExtension(gameCover.FileName);
+            string fileName = Guid.NewGuid() + Path.GetExtension(dto.GameCover.FileName);
 
             string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
             Directory.CreateDirectory(folderPath);
@@ -284,37 +263,57 @@ public class AdminController : Controller
             string savePath = Path.Combine(folderPath, fileName);
             using (var stream = new FileStream(savePath, FileMode.Create))
             {
-                gameCover.CopyTo(stream);
+                dto.GameCover.CopyTo(stream);
             }
 
             relativePath = "/Images/" + fileName;
         }
 
-        var game = _db.BoardGames.FirstOrDefault(x => x.Id == Id);
-        if (game != null)
-        {
-            game.Title = gameTitle;
-            game.Description = gameDesc;
-            if (relativePath != "") game.Image = relativePath;
-        }
+        var game = _db.BoardGames.FirstOrDefault(x => x.Id == id);
+        if (game == null)
+            return NotFound();
+
+        game.Title = dto.GameTitle;
+        game.Description = dto.GameDesc;
+        if (relativePath != "") game.Image = relativePath;
+
         _db.SaveChanges();
 
-        return RedirectToAction("Index", "Home");
+        return Ok(new { success = true, message = "Game updated successfully" });
     }
 
-    [HttpPost("delete-game")]
-    public IActionResult DeleteGame(int Id)
+    [HttpDelete("{id}")]
+    public IActionResult DeleteGame(int id)
     {
-        if (!AdminCheck()) return RedirectToAction("Index", "Home");
+        if (!IsAdminCheck()) return Forbid();
 
-        var oneGame = _db.BoardGames.FirstOrDefault(x => x.Id == Id);
-        if (oneGame != null && (oneGame.StatusId == 1 || oneGame.StatusId == 4))
-        {
-            _db.BoardGames.Remove(oneGame);
-            _db.SaveChanges();
-        }
-        else return BadRequest("Cannot delete a game with this status.");
+        var oneGame = _db.BoardGames.FirstOrDefault(x => x.Id == id);
+        if (oneGame == null)
+            return NotFound();
 
-        return Ok();
+        if (oneGame.StatusId != 1 && oneGame.StatusId != 4)
+            return Conflict("Cannot delete a game with this status.");
+
+        _db.BoardGames.Remove(oneGame);
+        _db.SaveChanges();
+
+        return NoContent();
+    }
+
+    private bool IsAdminCheck()
+    {
+        var userId = HttpContext.Session.GetString("UserId");
+        if (!int.TryParse(userId, out var userID))
+            return false;
+
+        var user = _db.Users
+            .Where(u => u.Id == userID)
+            .Select(u => new { u.Role.Name })
+            .FirstOrDefault();
+
+        if (user == null || user.Name != "admin")
+            return false;
+
+        return true;
     }
 }
