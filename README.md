@@ -53,3 +53,53 @@ But for your convenience we provide the following already created users:
 1. > user  
     user
 
+
+## List of Requirements and Use Cases
+### Functional Requirements:
+1. 2 users: borrower (B) and admin (A) (boardgame members)
+1. B can see the board games list and availability; Can press to borrow (reserve)/go to the waiting list.
+1. A can see the board games list and add new/remove board games
+1. A is responsible for making board games literally un-/available
+1. Users can search board games and use filters (title, category, availability, number of players)
+1. Log in view - use uni e-mail to create a user, choose an unrelated password
+1. Confirmation email upon borrowing board games for both A and B
+1. Reminder emails to return board games
+1. Limit to how many emails can be sent/board games can be reserved by a user
+1. B view with borrowed board games, and when to return them or waiting list board games
+1. Account editing options, e.g., name, etc.
+1. The system should validate that the new user’s email and username are unique in the Database  
+
+```
+____________________________________  
+|                                   |  
+| |Photo| description (AVAILABLE)   |  
+|___________________________________|  
+
+    GUI layout for board games
+```
+
+### Non-functional Requirements:
+1. Scalable system, i.e., can easily add new borrowers, new games to the database
+1. Capacity - min. 100 board games, min. 100 borrower-users(B)
+1. Database stores/restores consistent data
+1. Security/authentication - safely storing passwords (hash, encrypt)
+1. Non-glitchy, responsive, and intuitive UI
+1. Graceful error handling
+1. Forgiving search algorithm (fuzzy search)
+
+### User case:
+#### Boardgame Club enjoyers
+1. A visitor of the website can browse the available collection.
+1. A user can sign up with their account credentials.
+1. Borrower
+    1. A borrower can search for an entry using filters
+    1. A borrower can preview availability and reserve a board game
+    1. A borrower can see the history of reserved items.
+    1. The user can extend the period of the borrowed item.
+1. Admin
+    1. An admin is able to change the status of a board game as un-/available.
+    1. The admin can see all reserved and borrowed board games.
+    1. The admin can extend the borrowing period.
+    1. The admin can edit existing entries, add new ones, or remove retired ones.
+    1. The admin can delete a borrow-user
+
