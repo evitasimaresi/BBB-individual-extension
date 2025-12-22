@@ -68,10 +68,10 @@ public class GamesController : Controller
         BoardGame? game = _db.BoardGames.FirstOrDefault(g => g.Id == request.GameId);
 
         if (game == null)
-            return StatusCode(418, "I'm a teapot");
+            return NotFound();
 
         if (game.StatusId != 1 && game.StatusId != 3)
-            return Conflict();
+            return Conflict(new { message = "Game not available for borrowing" });
 
         int userID;
         if (!int.TryParse(userId, out userID))
