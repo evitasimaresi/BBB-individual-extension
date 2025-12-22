@@ -101,28 +101,37 @@
 
     <dialog id="editGame">
 
-        <form class="game-edit-form" method="post" action="@Url.Action("EditGame", "Admin")"
-            enctype="multipart/form-data">
+        <form class="game-edit-form" id="edit-game-form" enctype="multipart/form-data">
             <input type="hidden" id="gameId" name="Id" />
 
             <section>
                 <label for="gameTitle" style="display:block; font-weight:bold; margin-bottom:5px;">Game Title</label>
-                <input type="text" id="gameTitle" name="gameTitle" required>
+                <input type="text" id="gameTitle" name="GameTitle" required>
             </section>
 
             <section>
                 <label for="gameCover" style="display:block; font-weight:bold; margin-bottom:5px;">Game Cover</label>
-                <input type="file" id="gameCover" name="gameCover" accept="image/*">
+                <input type="file" id="gameCover" name="GameCover" accept="image/*" required>
             </section>
 
             <section>
                 <label for="gameDesc" style="display:block; font-weight:bold; margin-bottom:5px;">Description</label>
-                <textarea id="gameDesc" name="gameDesc" rows="4"></textarea>
+                <textarea id="gameDesc" name="GameDesc" rows="4" required></textarea>
             </section>
 
-            <button id="button-delete" type="button">Delete</button>
-            <button id="button-cancel" type="button">Cancel</button>
+            <section>
+                <label for="gameCond" style="display:block; font-weight:bold; margin-bottom:5px;">Condition</label>
+                <input type="text" id="gameCond" name="GameCond" required>
+            </section>
+
+            <section>
+                <label for="gameLink" style="display:block; font-weight:bold; margin-bottom:5px;">Link</label>
+                <input type="text" id="gameLink" name="GameLink" required>
+            </section>
+
             <button id="button-save" type="submit">Save</button>
+            <button id="button-cancel" type="button">Cancel</button>
+            <button id="button-delete" type="button">Delete</button>
 
         </form>
     </dialog>

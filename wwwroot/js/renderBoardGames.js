@@ -1,4 +1,4 @@
-import { getAllGames } from './services.js';
+import { getAllGames, getOneGame, editGame, deleteGame } from './services.js';
 
 // Variables
 let gamesData = [];
@@ -218,12 +218,13 @@ function borrowGame(gameId, buttonElement) {
 
 // Edit Game Modal
 function openModal(gameId) {
-    fetch(`/Admin/GetOneGame?gameId=${gameId}`)
-        .then(response => response.json())
+    getOneGame(gameId)
         .then(data => {
             document.getElementById('gameId').value = data.id;
-            document.getElementById('gameTitle').value = data.title;
-            document.getElementById('gameDesc').value = data.description;
+            document.getElementById('gameTitle').value = data.title || '';
+            document.getElementById('gameDesc').value = data.description || '';
+            document.getElementById('gameCond').value = data.condition || '';
+            document.getElementById('gameLink').value = data.link || '';
 
             const dialog = document.getElementById('editGame');
             dialog.showModal();
@@ -233,21 +234,23 @@ function openModal(gameId) {
 
 // Attach Modal listeners
 function attachModalListeners() {
-    document.getElementById('button-save').addEventListener('submit', function (e) {
+    document.getElementById('edit-game-form').addEventListener('submit', function (e) {
         e.preventDefault();
         const formData = new FormData(this);
+        const gameId = document.getElementById('gameId').value;
 
-        fetch('/Admin/EditGame', {
-            method: 'POST',
-            body: formData
-        }).then(() => location.reload());
+        formData.delete('Id');
+
+        editGame(gameId, formData)
+            .then(() => location.reload())
+            .catch(error => console.error('Error editing game:', error));
     });
 
     document.getElementById('button-delete').addEventListener('click', function () {
         const gameId = document.getElementById('gameId').value;
-        fetch(`/Admin/DeleteGame/${gameId}`, {
-            method: 'POST'
-        }).then(() => location.reload());
+        deleteGame(gameId)
+            .then(() => location.reload())
+            .catch(error => console.error('Error deleting game:', error));
     });
 
     document.getElementById('button-cancel').addEventListener('click', function () {
