@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
             successAlert.style.display = 'block';
 
             setTimeout(() => {
-                // document.getElementById('usernameDisplay').textContent = formData.username;
+                document.getElementById('usernameDisplay').textContent = formData.username;
                 successAlert.innerHTML = '';
                 successAlert.style.display = 'none';
             }, 4000);
