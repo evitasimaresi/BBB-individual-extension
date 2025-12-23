@@ -3,6 +3,11 @@
 ### Team 20
 ### Student: Simaresi Paraskevi-Dimitra
 
+## Deliverables
+1. Source code (root directory)
+1. Report [source](/Deliverables/Simaresi-Report-IndividualExtension.pdf)
+1. Demonstration Video [source](/Deliverables/video-demo.mp4) (duration 2min)
+
 ## Individual Extension
 
 **Topic:** REST API  
